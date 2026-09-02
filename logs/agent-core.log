@@ -1,0 +1,1466 @@
+2026-09-02 00:24:29.693 [main] INFO  c.a.agent.core.AgentCoreApplication - Starting AgentCoreApplication v0.0.1-SNAPSHOT using Java 21.0.9 with PID 56296 (E:\JAVAWEB\agent-core\target\classes started by User in E:\JAVAWEB\agent-core)
+2026-09-02 00:24:29.700 [main] DEBUG c.a.agent.core.AgentCoreApplication - Running with Spring Boot v4.1.0, Spring v7.0.8
+2026-09-02 00:24:29.700 [main] INFO  c.a.agent.core.AgentCoreApplication - No active profile set, falling back to 1 default profile: "default"
+2026-09-02 00:24:30.484 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-02 00:24:30.565 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 70 ms. Found 4 JPA repository interfaces.
+2026-09-02 00:24:31.126 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-09-02 00:24:31.143 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-09-02 00:24:31.144 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-02 00:24:31.214 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 1458 ms
+2026-09-02 00:24:31.899 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-02 00:24:31.935 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-09-02 00:24:33.583 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@3e5c7588
+2026-09-02 00:24:33.585 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-09-02 00:24:33.751 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-09-02 00:24:35.886 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-02 00:24:35.967 [main] INFO  o.s.d.j.r.q.QueryEnhancerFactories - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-02 00:24:36.857 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-02 00:24:37.292 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-09-02 00:24:37.300 [main] INFO  c.a.agent.core.AgentCoreApplication - Started AgentCoreApplication in 8.366 seconds (process running for 9.217)
+2026-09-02 00:24:51.727 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-02 00:24:51.728 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-09-02 00:24:51.728 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 0 ms
+2026-09-02 00:24:52.017 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 00:25:01.010 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+        and s1_0.estado in (?, ?) 
+    fetch
+        first ? rows only
+2026-09-02 00:25:01.171 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        saldos
+        (created_at, created_by, entidad_financiera_id, estado, fecha_asignacion, monto_disponible, monto_inicial, updated_at, updated_by, usuario_asignador) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-02 00:25:01.327 [http-nio-8080-exec-2] INFO  c.a.a.c.s.service.SaldoServiceImpl - Saldo creado: 4
+2026-09-02 00:25:14.237 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 00:25:20.897 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+        and s1_0.estado in (?, ?) 
+    fetch
+        first ? rows only
+2026-09-02 00:25:21.165 [http-nio-8080-exec-6] ERROR c.a.a.c.c.e.GlobalExceptionHandler - Excepción de negocio: Ya existe un saldo activo o bloqueado para la entidad financiera 2
+2026-09-02 00:26:25.531 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+        and s1_0.estado in (?, ?) 
+    fetch
+        first ? rows only
+2026-09-02 00:26:25.793 [http-nio-8080-exec-5] ERROR c.a.a.c.c.e.GlobalExceptionHandler - Excepción de negocio: Ya existe un saldo activo o bloqueado para la entidad financiera 2
+2026-09-02 00:26:33.978 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+        and s1_0.estado in (?, ?) 
+    fetch
+        first ? rows only
+2026-09-02 00:26:34.238 [http-nio-8080-exec-7] ERROR c.a.a.c.c.e.GlobalExceptionHandler - Excepción de negocio: Ya existe un saldo activo o bloqueado para la entidad financiera 2
+2026-09-02 00:27:02.386 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+        and s1_0.estado in (?, ?) 
+    fetch
+        first ? rows only
+2026-09-02 00:27:02.654 [http-nio-8080-exec-9] ERROR c.a.a.c.c.e.GlobalExceptionHandler - Excepción de negocio: Ya existe un saldo activo o bloqueado para la entidad financiera 2
+2026-09-02 00:27:05.822 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-02 00:27:05.828 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-09-02 00:27:05.832 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-02 00:27:05.834 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-09-02 00:27:06.089 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-09-02 00:28:10.798 [main] INFO  c.a.agent.core.AgentCoreApplication - Starting AgentCoreApplication v0.0.1-SNAPSHOT using Java 21.0.9 with PID 60628 (E:\JAVAWEB\agent-core\target\classes started by User in E:\JAVAWEB\agent-core)
+2026-09-02 00:28:10.801 [main] DEBUG c.a.agent.core.AgentCoreApplication - Running with Spring Boot v4.1.0, Spring v7.0.8
+2026-09-02 00:28:10.803 [main] INFO  c.a.agent.core.AgentCoreApplication - No active profile set, falling back to 1 default profile: "default"
+2026-09-02 00:28:11.518 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-02 00:28:11.595 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 66 ms. Found 4 JPA repository interfaces.
+2026-09-02 00:28:12.119 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-09-02 00:28:12.135 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-09-02 00:28:12.136 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-02 00:28:12.200 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 1353 ms
+2026-09-02 00:28:12.818 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-02 00:28:12.843 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-09-02 00:28:14.403 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@3211cc84
+2026-09-02 00:28:14.403 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-09-02 00:28:14.569 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-09-02 00:28:16.555 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-02 00:28:16.636 [main] INFO  o.s.d.j.r.q.QueryEnhancerFactories - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-02 00:28:17.441 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-02 00:28:17.820 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-09-02 00:28:17.825 [main] INFO  c.a.agent.core.AgentCoreApplication - Started AgentCoreApplication in 7.618 seconds (process running for 8.055)
+2026-09-02 00:28:50.242 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-02 00:28:50.242 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-09-02 00:28:50.244 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-09-02 00:28:50.524 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        o1_0.id,
+        o1_0.activo,
+        o1_0.created_at,
+        o1_0.created_by,
+        o1_0.descripcion_operacion,
+        o1_0.estado_operacion,
+        o1_0.fecha_hora,
+        o1_0.id_entidad_financiera,
+        o1_0.monto_operacion,
+        o1_0.numero_referencia,
+        o1_0.tipo_operacion,
+        o1_0.updated_at,
+        o1_0.updated_by,
+        o1_0.usuario_id 
+    from
+        operaciones o1_0 
+    where
+        o1_0.activo=? 
+    order by
+        o1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 00:29:07.723 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 00:30:31.733 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+        and s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    for
+        no key update of s1_0
+2026-09-02 00:30:31.892 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        operaciones
+        (activo, created_at, created_by, descripcion_operacion, estado_operacion, fecha_hora, id_entidad_financiera, monto_operacion, numero_referencia, tipo_operacion, updated_at, updated_by, usuario_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-02 00:30:32.054 [http-nio-8080-exec-3] INFO  c.a.a.c.o.s.OperacionServiceImpl - Operación creada: 4
+2026-09-02 00:30:32.092 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    update
+        saldos 
+    set
+        created_at=?,
+        created_by=?,
+        entidad_financiera_id=?,
+        estado=?,
+        fecha_asignacion=?,
+        monto_disponible=?,
+        monto_inicial=?,
+        updated_at=?,
+        updated_by=?,
+        usuario_asignador=? 
+    where
+        id=?
+2026-09-02 00:30:55.232 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+    order by
+        s1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 00:30:55.502 [http-nio-8080-exec-5] ERROR c.a.a.c.c.e.GlobalExceptionHandler - Error interno del servidor
+org.springframework.dao.InvalidDataAccessApiUsageException: No enum constant com.aitamh.agent.core.saldo.enums.EstadoSaldo.Activo
+	at org.springframework.orm.jpa.EntityManagerFactoryUtils.convertJpaAccessExceptionIfPossible(EntityManagerFactoryUtils.java:482)
+	at org.springframework.orm.jpa.hibernate.HibernateExceptionTranslator.translateExceptionIfPossible(HibernateExceptionTranslator.java:112)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:223)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.translateExceptionIfPossible(AbstractEntityManagerFactoryBean.java:577)
+	at org.springframework.dao.support.ChainedPersistenceExceptionTranslator.translateExceptionIfPossible(ChainedPersistenceExceptionTranslator.java:61)
+	at org.springframework.dao.support.DataAccessUtils.translateIfNecessary(DataAccessUtils.java:346)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:157)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:137)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:222)
+	at jdk.proxy2/jdk.proxy2.$Proxy146.findByEntidadFinancieraId(Unknown Source)
+	at com.aitamh.agent.core.saldo.service.SaldoServiceImpl.findByEntidadFinanciera(SaldoServiceImpl.java:69)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:190)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:158)
+	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:133)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:371)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:130)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:719)
+	at com.aitamh.agent.core.saldo.service.SaldoServiceImpl$$SpringCGLIB$$0.findByEntidadFinanciera(<generated>)
+	at com.aitamh.agent.core.saldo.controller.SaldoController.findByEntidadFinanciera(SaldoController.java:75)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:252)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:184)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:934)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:853)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:86)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1000)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:892)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:622)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:1272)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1801)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.IllegalArgumentException: No enum constant com.aitamh.agent.core.saldo.enums.EstadoSaldo.Activo
+	at java.base/java.lang.Enum.valueOf(Enum.java:293)
+	at org.hibernate.type.descriptor.java.EnumJavaType.fromName(EnumJavaType.java:262)
+	at org.hibernate.type.descriptor.java.EnumJavaType.wrap(EnumJavaType.java:129)
+	at org.hibernate.type.descriptor.java.EnumJavaType.wrap(EnumJavaType.java:36)
+	at org.hibernate.type.descriptor.jdbc.VarcharJdbcType$2.doExtract(VarcharJdbcType.java:117)
+	at org.hibernate.type.descriptor.jdbc.BasicExtractor.extract(BasicExtractor.java:43)
+	at org.hibernate.sql.results.jdbc.internal.JdbcValuesResultSetImpl.getCurrentRowValue(JdbcValuesResultSetImpl.java:381)
+	at org.hibernate.sql.results.internal.RowProcessingStateStandardImpl.getJdbcValue(RowProcessingStateStandardImpl.java:148)
+	at org.hibernate.sql.results.graph.basic.BasicResultAssembler.extractRawValue(BasicResultAssembler.java:52)
+	at org.hibernate.sql.results.graph.basic.BasicResultAssembler.assemble(BasicResultAssembler.java:57)
+	at org.hibernate.sql.results.graph.entity.internal.EntityInitializerImpl.extractConcreteTypeStateValues(EntityInitializerImpl.java:2040)
+	at org.hibernate.sql.results.graph.entity.internal.EntityInitializerImpl.initializeEntityInstance(EntityInitializerImpl.java:1701)
+	at org.hibernate.sql.results.graph.entity.internal.EntityInitializerImpl.initializeInstance(EntityInitializerImpl.java:1607)
+	at org.hibernate.sql.results.graph.entity.internal.EntityInitializerImpl.initializeInstance(EntityInitializerImpl.java:88)
+	at org.hibernate.sql.results.internal.StandardRowReader.coordinateInitializers(StandardRowReader.java:239)
+	at org.hibernate.sql.results.internal.StandardRowReader.readRow(StandardRowReader.java:137)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.read(ListResultsConsumer.java:245)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.readRows(ListResultsConsumer.java:235)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.consume(ListResultsConsumer.java:164)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.consume(ListResultsConsumer.java:31)
+	at org.hibernate.sql.exec.internal.JdbcSelectExecutorStandardImpl.doExecuteQuery(JdbcSelectExecutorStandardImpl.java:213)
+	at org.hibernate.sql.exec.internal.JdbcSelectExecutorStandardImpl.executeQuery(JdbcSelectExecutorStandardImpl.java:100)
+	at org.hibernate.sql.exec.spi.JdbcSelectExecutor.executeQuery(JdbcSelectExecutor.java:63)
+	at org.hibernate.sql.exec.spi.JdbcSelectExecutor.list(JdbcSelectExecutor.java:137)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.lambda$new$1(ConcreteSqmSelectQueryPlan.java:136)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.withCacheableSqmInterpretation(ConcreteSqmSelectQueryPlan.java:484)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.performList(ConcreteSqmSelectQueryPlan.java:411)
+	at org.hibernate.query.sqm.internal.SqmQueryImpl.doList(SqmQueryImpl.java:379)
+	at org.hibernate.query.spi.AbstractSelectionQuery.list(AbstractSelectionQuery.java:153)
+	at org.hibernate.query.Query.getResultList(Query.java:121)
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution$PagedExecution.doExecute(JpaQueryExecution.java:296)
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution.execute(JpaQueryExecution.java:100)
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.doExecute(AbstractJpaQuery.java:166)
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.execute(AbstractJpaQuery.java:156)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:169)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:167)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:146)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:69)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:133)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:371)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:130)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:135)
+	... 61 common frames omitted
+2026-09-02 00:31:14.022 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 00:31:39.643 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+        and s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    for
+        no key update of s1_0
+2026-09-02 00:31:39.902 [http-nio-8080-exec-8] ERROR c.a.a.c.c.e.GlobalExceptionHandler - Saldo insuficiente: Saldo insuficiente para realizar la operación. Entidad: 2, Saldo disponible: 1000.00, monto solicitado: 1500.00
+2026-09-02 00:32:11.632 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+        and s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    for
+        no key update of s1_0
+2026-09-02 00:32:11.892 [http-nio-8080-exec-10] ERROR c.a.a.c.c.e.GlobalExceptionHandler - Saldo insuficiente: Saldo insuficiente para realizar la operación. Entidad: 2, Saldo disponible: 1000.00, monto solicitado: 1001.00
+2026-09-02 00:32:19.190 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 00:32:46.825 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+        and s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    for
+        no key update of s1_0
+2026-09-02 00:32:46.961 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        operaciones
+        (activo, created_at, created_by, descripcion_operacion, estado_operacion, fecha_hora, id_entidad_financiera, monto_operacion, numero_referencia, tipo_operacion, updated_at, updated_by, usuario_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-02 00:32:47.092 [http-nio-8080-exec-9] INFO  c.a.a.c.o.s.OperacionServiceImpl - Operación creada: 5
+2026-09-02 00:32:47.092 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    update
+        saldos 
+    set
+        created_at=?,
+        created_by=?,
+        entidad_financiera_id=?,
+        estado=?,
+        fecha_asignacion=?,
+        monto_disponible=?,
+        monto_inicial=?,
+        updated_at=?,
+        updated_by=?,
+        usuario_asignador=? 
+    where
+        id=?
+2026-09-02 00:32:58.181 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 00:33:46.954 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+        and s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    for
+        no key update of s1_0
+2026-09-02 00:33:47.082 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        operaciones
+        (activo, created_at, created_by, descripcion_operacion, estado_operacion, fecha_hora, id_entidad_financiera, monto_operacion, numero_referencia, tipo_operacion, updated_at, updated_by, usuario_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-02 00:33:47.223 [http-nio-8080-exec-2] INFO  c.a.a.c.o.s.OperacionServiceImpl - Operación creada: 6
+2026-09-02 00:33:47.224 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    update
+        saldos 
+    set
+        created_at=?,
+        created_by=?,
+        entidad_financiera_id=?,
+        estado=?,
+        fecha_asignacion=?,
+        monto_disponible=?,
+        monto_inicial=?,
+        updated_at=?,
+        updated_by=?,
+        usuario_asignador=? 
+    where
+        id=?
+2026-09-02 00:33:55.568 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 00:34:11.570 [http-nio-8080-exec-3] ERROR c.a.a.c.c.e.GlobalExceptionHandler - Excepción de negocio: Tipo de operación no válido: DEPOSITOS
+2026-09-02 00:34:57.223 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        o1_0.id,
+        o1_0.activo,
+        o1_0.created_at,
+        o1_0.created_by,
+        o1_0.descripcion_operacion,
+        o1_0.estado_operacion,
+        o1_0.fecha_hora,
+        o1_0.id_entidad_financiera,
+        o1_0.monto_operacion,
+        o1_0.numero_referencia,
+        o1_0.tipo_operacion,
+        o1_0.updated_at,
+        o1_0.updated_by,
+        o1_0.usuario_id 
+    from
+        operaciones o1_0 
+    where
+        o1_0.activo=? 
+    order by
+        o1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 00:35:38.825 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+    order by
+        s1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 00:35:39.097 [http-nio-8080-exec-6] ERROR c.a.a.c.c.e.GlobalExceptionHandler - Error interno del servidor
+org.springframework.dao.InvalidDataAccessApiUsageException: No enum constant com.aitamh.agent.core.saldo.enums.EstadoSaldo.Activo
+	at org.springframework.orm.jpa.EntityManagerFactoryUtils.convertJpaAccessExceptionIfPossible(EntityManagerFactoryUtils.java:482)
+	at org.springframework.orm.jpa.hibernate.HibernateExceptionTranslator.translateExceptionIfPossible(HibernateExceptionTranslator.java:112)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:223)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.translateExceptionIfPossible(AbstractEntityManagerFactoryBean.java:577)
+	at org.springframework.dao.support.ChainedPersistenceExceptionTranslator.translateExceptionIfPossible(ChainedPersistenceExceptionTranslator.java:61)
+	at org.springframework.dao.support.DataAccessUtils.translateIfNecessary(DataAccessUtils.java:346)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:157)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:137)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:222)
+	at jdk.proxy2/jdk.proxy2.$Proxy146.findByEntidadFinancieraId(Unknown Source)
+	at com.aitamh.agent.core.saldo.service.SaldoServiceImpl.findByEntidadFinanciera(SaldoServiceImpl.java:69)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:190)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:158)
+	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:133)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:371)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:130)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:719)
+	at com.aitamh.agent.core.saldo.service.SaldoServiceImpl$$SpringCGLIB$$0.findByEntidadFinanciera(<generated>)
+	at com.aitamh.agent.core.saldo.controller.SaldoController.findByEntidadFinanciera(SaldoController.java:75)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:252)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:184)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:934)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:853)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:86)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1000)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:892)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:622)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:492)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:1272)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1801)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.IllegalArgumentException: No enum constant com.aitamh.agent.core.saldo.enums.EstadoSaldo.Activo
+	at java.base/java.lang.Enum.valueOf(Enum.java:293)
+	at org.hibernate.type.descriptor.java.EnumJavaType.fromName(EnumJavaType.java:262)
+	at org.hibernate.type.descriptor.java.EnumJavaType.wrap(EnumJavaType.java:129)
+	at org.hibernate.type.descriptor.java.EnumJavaType.wrap(EnumJavaType.java:36)
+	at org.hibernate.type.descriptor.jdbc.VarcharJdbcType$2.doExtract(VarcharJdbcType.java:117)
+	at org.hibernate.type.descriptor.jdbc.BasicExtractor.extract(BasicExtractor.java:43)
+	at org.hibernate.sql.results.jdbc.internal.JdbcValuesResultSetImpl.getCurrentRowValue(JdbcValuesResultSetImpl.java:381)
+	at org.hibernate.sql.results.internal.RowProcessingStateStandardImpl.getJdbcValue(RowProcessingStateStandardImpl.java:148)
+	at org.hibernate.sql.results.graph.basic.BasicResultAssembler.extractRawValue(BasicResultAssembler.java:52)
+	at org.hibernate.sql.results.graph.basic.BasicResultAssembler.assemble(BasicResultAssembler.java:57)
+	at org.hibernate.sql.results.graph.entity.internal.EntityInitializerImpl.extractConcreteTypeStateValues(EntityInitializerImpl.java:2040)
+	at org.hibernate.sql.results.graph.entity.internal.EntityInitializerImpl.initializeEntityInstance(EntityInitializerImpl.java:1701)
+	at org.hibernate.sql.results.graph.entity.internal.EntityInitializerImpl.initializeInstance(EntityInitializerImpl.java:1607)
+	at org.hibernate.sql.results.graph.entity.internal.EntityInitializerImpl.initializeInstance(EntityInitializerImpl.java:88)
+	at org.hibernate.sql.results.internal.StandardRowReader.coordinateInitializers(StandardRowReader.java:239)
+	at org.hibernate.sql.results.internal.StandardRowReader.readRow(StandardRowReader.java:137)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.read(ListResultsConsumer.java:245)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.readRows(ListResultsConsumer.java:235)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.consume(ListResultsConsumer.java:164)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.consume(ListResultsConsumer.java:31)
+	at org.hibernate.sql.exec.internal.JdbcSelectExecutorStandardImpl.doExecuteQuery(JdbcSelectExecutorStandardImpl.java:213)
+	at org.hibernate.sql.exec.internal.JdbcSelectExecutorStandardImpl.executeQuery(JdbcSelectExecutorStandardImpl.java:100)
+	at org.hibernate.sql.exec.spi.JdbcSelectExecutor.executeQuery(JdbcSelectExecutor.java:63)
+	at org.hibernate.sql.exec.spi.JdbcSelectExecutor.list(JdbcSelectExecutor.java:137)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.lambda$new$1(ConcreteSqmSelectQueryPlan.java:136)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.withCacheableSqmInterpretation(ConcreteSqmSelectQueryPlan.java:484)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.performList(ConcreteSqmSelectQueryPlan.java:411)
+	at org.hibernate.query.sqm.internal.SqmQueryImpl.doList(SqmQueryImpl.java:379)
+	at org.hibernate.query.spi.AbstractSelectionQuery.list(AbstractSelectionQuery.java:153)
+	at org.hibernate.query.Query.getResultList(Query.java:121)
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution$PagedExecution.doExecute(JpaQueryExecution.java:296)
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution.execute(JpaQueryExecution.java:100)
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.doExecute(AbstractJpaQuery.java:166)
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.execute(AbstractJpaQuery.java:156)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:169)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:167)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:146)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:69)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:133)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:371)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:130)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:135)
+	... 61 common frames omitted
+2026-09-02 00:41:53.485 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+    order by
+        s1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 00:42:47.519 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+        and s1_0.estado in (?, ?) 
+    fetch
+        first ? rows only
+2026-09-02 00:42:47.777 [http-nio-8080-exec-10] ERROR c.a.a.c.c.e.GlobalExceptionHandler - Excepción de negocio: Ya existe un saldo activo o bloqueado para la entidad financiera 2
+2026-09-02 00:44:09.399 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+    order by
+        s1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 00:44:17.698 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 00:51:04.572 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-02 00:51:04.583 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-09-02 00:51:04.588 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-02 00:51:04.589 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-09-02 00:51:04.718 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-09-02 00:56:58.640 [main] INFO  c.a.agent.core.AgentCoreApplication - Starting AgentCoreApplication v0.0.1-SNAPSHOT using Java 21.0.9 with PID 52428 (E:\JAVAWEB\agent-core\target\classes started by User in E:\JAVAWEB\agent-core)
+2026-09-02 00:56:58.643 [main] DEBUG c.a.agent.core.AgentCoreApplication - Running with Spring Boot v4.1.0, Spring v7.0.8
+2026-09-02 00:56:58.643 [main] INFO  c.a.agent.core.AgentCoreApplication - No active profile set, falling back to 1 default profile: "default"
+2026-09-02 00:56:59.517 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-02 00:56:59.600 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 74 ms. Found 4 JPA repository interfaces.
+2026-09-02 00:57:00.175 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-09-02 00:57:00.191 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-09-02 00:57:00.192 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-02 00:57:00.265 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 1576 ms
+2026-09-02 00:57:00.969 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-02 00:57:01.000 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-09-02 00:57:03.632 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@3211cc84
+2026-09-02 00:57:03.633 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-09-02 00:57:03.800 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-09-02 00:57:06.039 [main] ERROR o.s.o.j.LocalContainerEntityManagerFactoryBean - Failed to initialize JPA EntityManagerFactory: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: missing column [comision] in table [operaciones]
+2026-09-02 00:57:06.040 [main] WARN  o.s.b.w.s.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: missing column [comision] in table [operaciones]
+2026-09-02 00:57:06.040 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-09-02 00:57:06.310 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-09-02 00:57:06.313 [main] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+2026-09-02 00:57:06.326 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-09-02 00:57:06.371 [main] ERROR o.s.boot.SpringApplication - Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: missing column [comision] in table [operaciones]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1815)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:603)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:977)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621)
+	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354)
+	at com.aitamh.agent.core.AgentCoreApplication.main(AgentCoreApplication.java:10)
+Caused by: jakarta.persistence.PersistenceException: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: missing column [comision] in table [operaciones]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:448)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:411)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:419)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1862)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1811)
+	... 15 common frames omitted
+Caused by: org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: missing column [comision] in table [operaciones]
+	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.validateTable(AbstractSchemaValidator.java:141)
+	at org.hibernate.tool.schema.internal.GroupedSchemaValidatorImpl.validateTables(GroupedSchemaValidatorImpl.java:42)
+	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.performValidation(AbstractSchemaValidator.java:97)
+	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.doValidation(AbstractSchemaValidator.java:75)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:278)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$1(SchemaManagementToolCoordinator.java:101)
+	at java.base/java.util.HashMap.forEach(HashMap.java:1429)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:100)
+	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:35)
+	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:33)
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:327)
+	at org.hibernate.internal.SessionFactoryRegistry.instantiateSessionFactory(SessionFactoryRegistry.java:64)
+	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:458)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1452)
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:93)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:443)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:436)
+	... 19 common frames omitted
+2026-09-02 00:58:12.746 [main] INFO  c.a.agent.core.AgentCoreApplication - Starting AgentCoreApplication v0.0.1-SNAPSHOT using Java 21.0.9 with PID 30604 (E:\JAVAWEB\agent-core\target\classes started by User in E:\JAVAWEB\agent-core)
+2026-09-02 00:58:12.748 [main] DEBUG c.a.agent.core.AgentCoreApplication - Running with Spring Boot v4.1.0, Spring v7.0.8
+2026-09-02 00:58:12.748 [main] INFO  c.a.agent.core.AgentCoreApplication - No active profile set, falling back to 1 default profile: "default"
+2026-09-02 00:58:13.456 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-02 00:58:13.539 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 66 ms. Found 4 JPA repository interfaces.
+2026-09-02 00:58:14.024 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-09-02 00:58:14.037 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-09-02 00:58:14.038 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-02 00:58:14.093 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 1308 ms
+2026-09-02 00:58:14.657 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-02 00:58:14.684 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-09-02 00:58:16.342 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5e278e25
+2026-09-02 00:58:16.344 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-09-02 00:58:16.522 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-09-02 00:58:18.594 [main] ERROR o.s.o.j.LocalContainerEntityManagerFactoryBean - Failed to initialize JPA EntityManagerFactory: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: missing column [comision] in table [operaciones]
+2026-09-02 00:58:18.594 [main] WARN  o.s.b.w.s.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: missing column [comision] in table [operaciones]
+2026-09-02 00:58:18.595 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-09-02 00:58:18.857 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-09-02 00:58:18.870 [main] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+2026-09-02 00:58:18.878 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-09-02 00:58:18.897 [main] ERROR o.s.boot.SpringApplication - Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: missing column [comision] in table [operaciones]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1815)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:603)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:977)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621)
+	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354)
+	at com.aitamh.agent.core.AgentCoreApplication.main(AgentCoreApplication.java:10)
+Caused by: jakarta.persistence.PersistenceException: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: missing column [comision] in table [operaciones]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:448)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:411)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:419)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1862)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1811)
+	... 15 common frames omitted
+Caused by: org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: missing column [comision] in table [operaciones]
+	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.validateTable(AbstractSchemaValidator.java:141)
+	at org.hibernate.tool.schema.internal.GroupedSchemaValidatorImpl.validateTables(GroupedSchemaValidatorImpl.java:42)
+	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.performValidation(AbstractSchemaValidator.java:97)
+	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.doValidation(AbstractSchemaValidator.java:75)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:278)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$1(SchemaManagementToolCoordinator.java:101)
+	at java.base/java.util.HashMap.forEach(HashMap.java:1429)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:100)
+	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:35)
+	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:33)
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:327)
+	at org.hibernate.internal.SessionFactoryRegistry.instantiateSessionFactory(SessionFactoryRegistry.java:64)
+	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:458)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1452)
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:93)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:443)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:436)
+	... 19 common frames omitted
+2026-09-02 00:59:46.886 [main] INFO  c.a.agent.core.AgentCoreApplication - Starting AgentCoreApplication v0.0.1-SNAPSHOT using Java 21.0.9 with PID 49640 (E:\JAVAWEB\agent-core\target\classes started by User in E:\JAVAWEB\agent-core)
+2026-09-02 00:59:46.888 [main] DEBUG c.a.agent.core.AgentCoreApplication - Running with Spring Boot v4.1.0, Spring v7.0.8
+2026-09-02 00:59:46.889 [main] INFO  c.a.agent.core.AgentCoreApplication - No active profile set, falling back to 1 default profile: "default"
+2026-09-02 00:59:47.599 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-02 00:59:47.666 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 60 ms. Found 4 JPA repository interfaces.
+2026-09-02 00:59:48.145 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-09-02 00:59:48.156 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-09-02 00:59:48.156 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-02 00:59:48.214 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 1282 ms
+2026-09-02 00:59:48.790 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-02 00:59:48.814 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-09-02 00:59:50.353 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@3211cc84
+2026-09-02 00:59:50.357 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-09-02 00:59:50.517 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-09-02 00:59:52.516 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-02 00:59:52.587 [main] INFO  o.s.d.j.r.q.QueryEnhancerFactories - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-02 00:59:53.418 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-02 00:59:53.802 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-09-02 00:59:53.808 [main] INFO  c.a.agent.core.AgentCoreApplication - Started AgentCoreApplication in 7.509 seconds (process running for 7.927)
+2026-09-02 01:00:09.993 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-02 01:00:09.993 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-09-02 01:00:09.995 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-09-02 01:00:10.278 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        o1_0.id,
+        o1_0.activo,
+        o1_0.comision,
+        o1_0.created_at,
+        o1_0.created_by,
+        o1_0.descripcion_operacion,
+        o1_0.estado_operacion,
+        o1_0.fecha_hora,
+        o1_0.id_entidad_financiera,
+        o1_0.monto_operacion,
+        o1_0.numero_referencia,
+        o1_0.tipo_operacion,
+        o1_0.updated_at,
+        o1_0.updated_by,
+        o1_0.usuario_id 
+    from
+        operaciones o1_0 
+    where
+        o1_0.activo=? 
+    order by
+        o1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 01:00:16.334 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 01:04:18.240 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+        and s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    for
+        no key update of s1_0
+2026-09-02 01:04:18.404 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        operaciones
+        (activo, comision, created_at, created_by, descripcion_operacion, estado_operacion, fecha_hora, id_entidad_financiera, monto_operacion, numero_referencia, tipo_operacion, updated_at, updated_by, usuario_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-02 01:04:18.569 [http-nio-8080-exec-4] INFO  c.a.a.c.o.s.OperacionServiceImpl - Operación creada: 7
+2026-09-02 01:04:18.584 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    update
+        saldos 
+    set
+        created_at=?,
+        created_by=?,
+        entidad_financiera_id=?,
+        estado=?,
+        fecha_asignacion=?,
+        monto_disponible=?,
+        monto_inicial=?,
+        updated_at=?,
+        updated_by=?,
+        usuario_asignador=? 
+    where
+        id=?
+2026-09-02 01:04:29.078 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        o1_0.id,
+        o1_0.activo,
+        o1_0.comision,
+        o1_0.created_at,
+        o1_0.created_by,
+        o1_0.descripcion_operacion,
+        o1_0.estado_operacion,
+        o1_0.fecha_hora,
+        o1_0.id_entidad_financiera,
+        o1_0.monto_operacion,
+        o1_0.numero_referencia,
+        o1_0.tipo_operacion,
+        o1_0.updated_at,
+        o1_0.updated_by,
+        o1_0.usuario_id 
+    from
+        operaciones o1_0 
+    where
+        o1_0.activo=? 
+    order by
+        o1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 01:05:33.457 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-02 01:05:33.465 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-09-02 01:05:33.469 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-02 01:05:33.471 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-09-02 01:05:33.719 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-09-02 01:05:39.639 [main] INFO  c.a.agent.core.AgentCoreApplication - Starting AgentCoreApplication v0.0.1-SNAPSHOT using Java 21.0.9 with PID 35536 (E:\JAVAWEB\agent-core\target\classes started by User in E:\JAVAWEB\agent-core)
+2026-09-02 01:05:39.641 [main] DEBUG c.a.agent.core.AgentCoreApplication - Running with Spring Boot v4.1.0, Spring v7.0.8
+2026-09-02 01:05:39.642 [main] INFO  c.a.agent.core.AgentCoreApplication - No active profile set, falling back to 1 default profile: "default"
+2026-09-02 01:05:40.350 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-02 01:05:40.425 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 62 ms. Found 4 JPA repository interfaces.
+2026-09-02 01:05:40.877 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-09-02 01:05:40.890 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-09-02 01:05:40.891 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-02 01:05:40.948 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 1263 ms
+2026-09-02 01:05:41.503 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-02 01:05:41.536 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-09-02 01:05:43.150 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@3211cc84
+2026-09-02 01:05:43.151 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-09-02 01:05:43.330 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-09-02 01:05:45.398 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-02 01:05:45.470 [main] INFO  o.s.d.j.r.q.QueryEnhancerFactories - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-02 01:05:46.272 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-02 01:05:46.644 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-09-02 01:05:46.649 [main] INFO  c.a.agent.core.AgentCoreApplication - Started AgentCoreApplication in 7.604 seconds (process running for 8.041)
+2026-09-02 01:05:56.292 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-02 01:05:56.292 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-09-02 01:05:56.294 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-09-02 01:05:56.583 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        o1_0.id,
+        o1_0.activo,
+        o1_0.comision,
+        o1_0.created_at,
+        o1_0.created_by,
+        o1_0.descripcion_operacion,
+        o1_0.estado_operacion,
+        o1_0.fecha_hora,
+        o1_0.id_entidad_financiera,
+        o1_0.monto_operacion,
+        o1_0.numero_referencia,
+        o1_0.tipo_operacion,
+        o1_0.updated_at,
+        o1_0.updated_by,
+        o1_0.usuario_id 
+    from
+        operaciones o1_0 
+    where
+        o1_0.activo=? 
+    order by
+        o1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 01:08:54.379 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-02 01:08:54.385 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-09-02 01:08:54.389 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-02 01:08:54.391 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-09-02 01:08:54.396 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-09-02 01:12:29.547 [main] INFO  c.a.agent.core.AgentCoreApplication - Starting AgentCoreApplication v0.0.1-SNAPSHOT using Java 21.0.9 with PID 58864 (E:\JAVAWEB\agent-core\target\classes started by User in E:\JAVAWEB\agent-core)
+2026-09-02 01:12:29.549 [main] DEBUG c.a.agent.core.AgentCoreApplication - Running with Spring Boot v4.1.0, Spring v7.0.8
+2026-09-02 01:12:29.550 [main] INFO  c.a.agent.core.AgentCoreApplication - No active profile set, falling back to 1 default profile: "default"
+2026-09-02 01:12:30.228 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-02 01:12:30.313 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 65 ms. Found 4 JPA repository interfaces.
+2026-09-02 01:12:30.783 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-09-02 01:12:30.796 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-09-02 01:12:30.797 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-02 01:12:30.854 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 1264 ms
+2026-09-02 01:12:31.425 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-02 01:12:31.449 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-09-02 01:12:33.039 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@3211cc84
+2026-09-02 01:12:33.041 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-09-02 01:12:33.207 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-09-02 01:12:35.280 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-02 01:12:35.369 [main] INFO  o.s.d.j.r.q.QueryEnhancerFactories - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-02 01:12:36.299 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-02 01:12:36.662 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-09-02 01:12:36.669 [main] INFO  c.a.agent.core.AgentCoreApplication - Started AgentCoreApplication in 7.718 seconds (process running for 8.203)
+2026-09-02 01:12:59.769 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-02 01:12:59.769 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-09-02 01:12:59.771 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-09-02 01:13:00.135 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        o1_0.id,
+        o1_0.activo,
+        o1_0.comision,
+        o1_0.created_at,
+        o1_0.created_by,
+        o1_0.descripcion_operacion,
+        o1_0.estado_operacion,
+        o1_0.fecha_hora,
+        o1_0.id_entidad_financiera,
+        o1_0.monto_operacion,
+        o1_0.numero_referencia,
+        o1_0.tipo_operacion,
+        o1_0.updated_at,
+        o1_0.updated_by,
+        o1_0.usuario_id 
+    from
+        operaciones o1_0 
+    where
+        o1_0.activo=? 
+    order by
+        o1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 01:21:24.555 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-02 01:21:24.561 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-09-02 01:21:24.565 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-02 01:21:24.567 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-09-02 01:21:24.706 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-09-02 01:21:30.686 [main] INFO  c.a.agent.core.AgentCoreApplication - Starting AgentCoreApplication v0.0.1-SNAPSHOT using Java 21.0.9 with PID 32304 (E:\JAVAWEB\agent-core\target\classes started by User in E:\JAVAWEB\agent-core)
+2026-09-02 01:21:30.689 [main] DEBUG c.a.agent.core.AgentCoreApplication - Running with Spring Boot v4.1.0, Spring v7.0.8
+2026-09-02 01:21:30.690 [main] INFO  c.a.agent.core.AgentCoreApplication - No active profile set, falling back to 1 default profile: "default"
+2026-09-02 01:21:31.529 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-02 01:21:31.622 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 75 ms. Found 4 JPA repository interfaces.
+2026-09-02 01:21:32.273 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-09-02 01:21:32.288 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-09-02 01:21:32.288 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-09-02 01:21:32.373 [main] INFO  o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 1625 ms
+2026-09-02 01:21:33.115 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-02 01:21:33.149 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-09-02 01:21:34.745 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5cb76070
+2026-09-02 01:21:34.748 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-09-02 01:21:34.908 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-09-02 01:21:37.313 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-02 01:21:37.404 [main] INFO  o.s.d.j.r.q.QueryEnhancerFactories - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-02 01:21:38.361 [main] WARN  o.s.b.j.a.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-02 01:21:38.810 [main] INFO  o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-09-02 01:21:38.847 [main] INFO  c.a.agent.core.AgentCoreApplication - Started AgentCoreApplication in 8.936 seconds (process running for 10.328)
+2026-09-02 01:21:59.158 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-02 01:21:59.158 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-09-02 01:21:59.160 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-09-02 01:23:36.124 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m1s262ms356µs500ns).
+2026-09-02 01:23:49.299 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        o1_0.id,
+        o1_0.activo,
+        o1_0.comision,
+        o1_0.created_at,
+        o1_0.created_by,
+        o1_0.descripcion_operacion,
+        o1_0.estado_operacion,
+        o1_0.fecha_hora,
+        o1_0.id_entidad_financiera,
+        o1_0.monto_operacion,
+        o1_0.numero_referencia,
+        o1_0.tipo_operacion,
+        o1_0.updated_at,
+        o1_0.updated_by,
+        o1_0.usuario_id 
+    from
+        operaciones o1_0 
+    where
+        o1_0.activo=? 
+    order by
+        o1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 01:24:47.316 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m11s191ms924µs500ns).
+2026-09-02 01:25:18.854 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 01:25:32.360 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+        and s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    for
+        no key update of s1_0
+2026-09-02 01:25:32.629 [http-nio-8080-exec-3] ERROR c.a.a.c.c.e.GlobalExceptionHandler - Saldo insuficiente: Saldo insuficiente para realizar la operación. Entidad: 2, Saldo disponible: 100.00, monto solicitado: 1000.00
+2026-09-02 01:26:16.981 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+        and s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    for
+        no key update of s1_0
+2026-09-02 01:26:17.254 [http-nio-8080-exec-5] ERROR c.a.a.c.c.e.GlobalExceptionHandler - Saldo insuficiente: Saldo insuficiente para realizar la operación. Entidad: 2, Saldo disponible: 100.00, monto solicitado: 1000.00
+2026-09-02 01:26:30.186 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.entidad_financiera_id=? 
+        and s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    for
+        no key update of s1_0
+2026-09-02 01:26:30.391 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        operaciones
+        (activo, comision, created_at, created_by, descripcion_operacion, estado_operacion, fecha_hora, id_entidad_financiera, monto_operacion, numero_referencia, tipo_operacion, updated_at, updated_by, usuario_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-02 01:26:30.551 [http-nio-8080-exec-7] INFO  c.a.a.c.o.s.OperacionServiceImpl - Operación creada: 8
+2026-09-02 01:26:30.573 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    update
+        saldos 
+    set
+        created_at=?,
+        created_by=?,
+        entidad_financiera_id=?,
+        estado=?,
+        fecha_asignacion=?,
+        monto_disponible=?,
+        monto_inicial=?,
+        updated_at=?,
+        updated_by=?,
+        usuario_asignador=? 
+    where
+        id=?
+2026-09-02 01:26:44.467 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        s1_0.id,
+        s1_0.created_at,
+        s1_0.created_by,
+        s1_0.entidad_financiera_id,
+        s1_0.estado,
+        s1_0.fecha_asignacion,
+        s1_0.monto_disponible,
+        s1_0.monto_inicial,
+        s1_0.updated_at,
+        s1_0.updated_by,
+        s1_0.usuario_asignador 
+    from
+        saldos s1_0 
+    where
+        s1_0.estado=? 
+    order by
+        s1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 01:26:58.253 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        o1_0.id,
+        o1_0.activo,
+        o1_0.comision,
+        o1_0.created_at,
+        o1_0.created_by,
+        o1_0.descripcion_operacion,
+        o1_0.estado_operacion,
+        o1_0.fecha_hora,
+        o1_0.id_entidad_financiera,
+        o1_0.monto_operacion,
+        o1_0.numero_referencia,
+        o1_0.tipo_operacion,
+        o1_0.updated_at,
+        o1_0.updated_by,
+        o1_0.usuario_id 
+    from
+        operaciones o1_0 
+    where
+        o1_0.activo=? 
+    order by
+        o1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 01:27:36.374 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        o1_0.id,
+        o1_0.activo,
+        o1_0.comision,
+        o1_0.created_at,
+        o1_0.created_by,
+        o1_0.descripcion_operacion,
+        o1_0.estado_operacion,
+        o1_0.fecha_hora,
+        o1_0.id_entidad_financiera,
+        o1_0.monto_operacion,
+        o1_0.numero_referencia,
+        o1_0.tipo_operacion,
+        o1_0.updated_at,
+        o1_0.updated_by,
+        o1_0.usuario_id 
+    from
+        operaciones o1_0 
+    where
+        o1_0.activo=? 
+    order by
+        o1_0.id desc 
+    fetch
+        first ? rows only
+2026-09-02 01:27:48.046 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-02 01:27:48.050 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-09-02 01:27:48.058 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-02 01:27:48.062 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-09-02 01:27:48.338 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

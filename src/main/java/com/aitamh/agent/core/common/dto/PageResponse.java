@@ -1,0 +1,28 @@
+package com.aitamh.agent.core.common.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.util.List;
+
+/**
+ * Respuesta genérica para operaciones de listado con paginación.
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class PageResponse<T> {
+
+    private List<T> content;
+    private int pageNumber;
+    private int pageSize;
+    private long totalElements;
+    private int totalPages;
+    private boolean isLast;
+    private boolean isFirst;
+}
+
