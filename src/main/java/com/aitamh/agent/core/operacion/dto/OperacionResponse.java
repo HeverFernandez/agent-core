@@ -24,8 +24,9 @@ public class OperacionResponse {
     private BigDecimal comision;
     private String descripcionOperacion;
     private String numeroReferencia;
-    private LocalDateTime fechaHora;
+    private LocalDateTime fechaOperacion;
     private Long idEntidadFinanciera;
+    private String entidadDenominacion;
     private Long usuarioId;
     private String estadoOperacion;
     private LocalDateTime createdAt;
@@ -33,4 +34,3 @@ public class OperacionResponse {
     private String createdBy;
     private String updatedBy;
 }
-

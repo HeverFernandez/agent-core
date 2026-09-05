@@ -80,7 +80,6 @@ public class OperacionServiceImpl implements OperacionService {
 
         // Registrar operación
         Operacion entity = mapper.toEntity(request);
-        entity.setFechaHora(LocalDateTime.now());
         entity.setEstadoOperacion("completada");
         entity.setActivo(true);
         entity = repository.save(entity);
@@ -136,7 +135,7 @@ public class OperacionServiceImpl implements OperacionService {
     @Override
     @Transactional(readOnly = true)
     public PageResponse<OperacionResponse> findByFechaBetween(LocalDateTime inicio, LocalDateTime fin, Pageable pageable) {
-        Page<Operacion> page = repository.findByFechaHoraBetweenAndActivo(inicio, fin, true, pageable);
+        Page<Operacion> page = repository.findByFechaOperacionBetweenAndActivo(inicio, fin, true, pageable);
         return buildPageResponse(page);
     }
 

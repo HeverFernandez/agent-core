@@ -1,5 +1,6 @@
 package com.aitamh.agent.core.operacion.entity;
 
+import com.aitamh.agent.core.entidadfinanciera.entity.EntidadFinanciera;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,11 +39,15 @@ public class Operacion {
     @Column(name = "numero_referencia", nullable = false, length = 50)
     private String numeroReferencia;
 
-    @Column(name = "fecha_hora", nullable = false)
-    private LocalDateTime fechaHora;
+    @Column(name = "fecha_operacion", nullable = false)
+    private LocalDateTime fechaOperacion;
 
     @Column(name = "id_entidad_financiera", nullable = false)
     private Long idEntidadFinanciera;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_entidad_financiera", referencedColumnName = "id", insertable = false, updatable = false)
+    private EntidadFinanciera entidadFinanciera;
 
     @Column(name = "usuario_id")
     private Long usuarioId;
@@ -70,6 +75,7 @@ public class Operacion {
         if (createdAt == null) {
             createdAt = LocalDateTime.now();
         }
+        fechaOperacion = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
 
@@ -78,4 +84,3 @@ public class Operacion {
         updatedAt = LocalDateTime.now();
     }
 }
-
