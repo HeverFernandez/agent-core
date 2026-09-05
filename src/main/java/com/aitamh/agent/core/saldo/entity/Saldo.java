@@ -2,6 +2,7 @@ package com.aitamh.agent.core.saldo.entity;
 
 import com.aitamh.agent.core.saldo.enums.EstadoSaldo;
 import jakarta.persistence.*;
+import com.aitamh.agent.core.entidadfinanciera.entity.EntidadFinanciera;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,6 +39,10 @@ public class Saldo {
 
     @Enumerated(EnumType.STRING)
     private EstadoSaldo estado;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "entidad_financiera_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private EntidadFinanciera entidadFinanciera;
 
     @Column(name = "usuario_asignador", length = 100)
     private String usuarioAsignador;

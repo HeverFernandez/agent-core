@@ -20,6 +20,7 @@ public class SaldoResponse {
 
     private Long id;
     private Long entidadFinancieraId;
+    private String entidadDenominacion;
     private BigDecimal montoInicial;
     private BigDecimal montoDisponible;
     private LocalDateTime fechaAsignacion;

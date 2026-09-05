@@ -4,6 +4,7 @@ import com.aitamh.agent.core.saldo.dto.SaldoRequest;
 import com.aitamh.agent.core.saldo.dto.SaldoResponse;
 import com.aitamh.agent.core.saldo.entity.Saldo;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
@@ -13,6 +14,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface SaldoMapper {
 
+    @Mapping(source = "entidadFinanciera.denominacion", target = "entidadDenominacion")
     SaldoResponse toResponse(Saldo entity);
 
     Saldo toEntity(SaldoRequest request);

@@ -11,7 +11,6 @@ import com.aitamh.agent.core.operacion.dto.OperacionResponse;
 import com.aitamh.agent.core.operacion.entity.Operacion;
 import com.aitamh.agent.core.operacion.mapper.OperacionMapper;
 import com.aitamh.agent.core.operacion.repository.OperacionRepository;
-import com.aitamh.agent.core.saldo.dto.SaldoRequest;
 import com.aitamh.agent.core.saldo.entity.Saldo;
 import com.aitamh.agent.core.saldo.enums.EstadoSaldo;
 import lombok.RequiredArgsConstructor;
