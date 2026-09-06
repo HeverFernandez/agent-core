@@ -77,3 +77,17 @@ logging:
     name: logs/agent-core.log
     max-size: 10MB
     max-history: 10
+
+# Actuator configuration: expose health and info endpoints for monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,loggers
+  endpoint:
+    health:
+      show-details: ALWAYS
+  health:
+    db:
+      enabled: true
+

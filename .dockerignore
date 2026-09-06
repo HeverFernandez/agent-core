@@ -1,0 +1,15 @@
+target
+logs
+.idea
+.vscode
+.mvn
+.git
+.gitignore
+Dockerfile
+*.md
+*.log
+*.gz
+node_modules
+*.iml
+**/target/**
+

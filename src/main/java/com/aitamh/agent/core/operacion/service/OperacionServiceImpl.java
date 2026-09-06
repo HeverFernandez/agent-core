@@ -21,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.stream.Collectors;
 
 /**
@@ -100,7 +102,11 @@ public class OperacionServiceImpl implements OperacionService {
     @Override
     @Transactional(readOnly = true)
     public PageResponse<OperacionResponse> findAll(Pageable pageable) {
-        Page<Operacion> page = repository.findByActivo(true, pageable);
+        LocalDate hoy = LocalDate.now();
+        LocalDateTime inicioDelDia = LocalDateTime.of(hoy, LocalTime.MIN);
+        LocalDateTime finDelDia = LocalDateTime.of(hoy, LocalTime.MAX);
+
+        Page<Operacion> page = repository.findByFechaOperacionBetweenAndActivo(inicioDelDia, finDelDia, true, pageable);
         return buildPageResponse(page);
     }
 
@@ -187,4 +193,3 @@ public class OperacionServiceImpl implements OperacionService {
                 .build();
     }
 }
-
