@@ -1,40 +1,33 @@
 # ==========================================
 # Etapa 1: Build
 # ==========================================
-FROM eclipse-temurin:21-jdk AS build
+FROM maven:3.9.6-eclipse-temurin-21 AS build
+
+WORKDIR /workspace
+
+# Copy only pom first to leverage layer caching for dependencies
+COPY pom.xml ./
+
+# (optional) download dependencies to cache layers
+RUN mvn -B -ntp dependency:go-offline
+
+# Copy source code
+COPY src ./src
+
+# Build application
+RUN mvn -B -e -DskipTests package
+
+
+# Runtime stage: lightweight JRE
+FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
 
-# Copiar archivos de Maven
-COPY pom.xml .
-COPY mvnw .
-COPY .mvn .mvn
+# Copy built jar
+COPY --from=build /workspace/target/*.jar app.jar
 
-# Dar permisos al Maven Wrapper
-RUN chmod +x mvnw
-
-# Descargar dependencias
-RUN ./mvnw dependency:go-offline -B
-
-# Copiar código fuente
-COPY src src
-
-# Construir aplicación
-RUN ./mvnw clean package -DskipTests
-
-
-# ==========================================
-# Etapa 2: Runtime
-# ==========================================
-FROM eclipse-temurin:21-jre
-
-WORKDIR /app
-
-# Copiar JAR generado
-COPY --from=build /app/target/*.jar app.jar
-
-# Puerto
 EXPOSE 8080
 
-# Ejecutar Spring Boot
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENV JAVA_OPTS="-Xms256m -Xmx512m -XX:+UseG1GC"
+
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /app/app.jar"]
