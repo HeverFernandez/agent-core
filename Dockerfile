@@ -1,6 +1,6 @@
 # Multi-stage Dockerfile for agent-core (Java 21)
 # Build stage: use Maven with Eclipse Temurin 21 JDK
-FROM maven:3.9.6-eclipse-temurin-21 AS build
+FROM eclipse-temurin:21-jdk AS build
 WORKDIR /workspace
 
 # copy only Maven files first to leverage layer caching
