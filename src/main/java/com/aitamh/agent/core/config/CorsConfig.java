@@ -33,7 +33,8 @@ public class CorsConfig implements WebMvcConfigurer {
                         "http://localhost:4200",      // Angular local (desarrollo)
                         "http://127.0.0.1:4200",      // Variante alternativa
                         "http://localhost:3000",      // Otros posibles puertos de desarrollo
-                        "http://localhost:5173"       // Vite (si usas Vite en lugar de Angular CLI)
+                        "http://localhost:5173",       // Vite (si usas Vite en lugar de Angular CLI)
+                        "https://heverfernandez.github.io"
                 )
                 // Métodos HTTP permitidos
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD")
