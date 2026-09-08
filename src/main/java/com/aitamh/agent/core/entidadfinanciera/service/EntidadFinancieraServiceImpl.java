@@ -6,6 +6,7 @@ import com.aitamh.agent.core.common.exception.EntityNotFoundException;
 import com.aitamh.agent.core.entidadfinanciera.dto.EntidadFinancieraRequest;
 import com.aitamh.agent.core.entidadfinanciera.dto.EntidadFinancieraResponse;
 import com.aitamh.agent.core.entidadfinanciera.entity.EntidadFinanciera;
+import com.aitamh.agent.core.entidadfinanciera.enums.TipoEntidad;
 import com.aitamh.agent.core.entidadfinanciera.mapper.EntidadFinancieraMapper;
 import com.aitamh.agent.core.entidadfinanciera.repository.EntidadFinancieraRepository;
 import com.aitamh.agent.core.entidadfinanciera.utils.Util;
@@ -33,8 +34,22 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
 
     @Override
     public EntidadFinancieraResponse create(EntidadFinancieraRequest request) {
+        // Validar que el tipo de entidad sea válido
+        if (!TipoEntidad.isValido(request.getTipoEntidad())) {
+            throw new BusinessException(
+                    String.format("Tipo de entidad no válido: %s. Valores permitidos: BANCO, SERVICIO", request.getTipoEntidad()));
+        }
+
+        // Validar unicidad de tipoEntidad + denominacion
+        repository.findByTipoEntidadAndDenominacion(request.getTipoEntidad(), request.getDenominacion())
+                .ifPresent(existing -> {
+                    throw new BusinessException(
+                            String.format("Ya existe una entidad financiera con tipo '%s' y denominación '%s'",
+                                    request.getTipoEntidad(), request.getDenominacion()));
+                });
+
         String codigo = util.generaCodigoEntidad(
-                "BANK", repository::existsByCodigoEntidad);
+                request, repository::existsByCodigoEntidad);
 
         EntidadFinanciera entity = mapper.toEntity(request);
         entity.setCodigoEntidad(codigo);
@@ -65,6 +80,11 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
     @Override
     @Transactional(readOnly = true)
     public PageResponse<EntidadFinancieraResponse> findByTipo(String tipoEntidad, Pageable pageable) {
+        if (!TipoEntidad.isValido(tipoEntidad)) {
+            throw new BusinessException(
+                    String.format("Tipo de entidad no válido: %s. Valores permitidos: BANCO, SERVICIO", tipoEntidad));
+        }
+
         Page<EntidadFinanciera> page = repository.findByTipoEntidadAndActivo(tipoEntidad, true, pageable);
         return buildPageResponse(page);
     }
@@ -74,6 +94,22 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
         EntidadFinanciera entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("EntidadFinanciera no encontrada: %d", id)));
+
+        // Validar que el tipo de entidad sea válido
+        if (!TipoEntidad.isValido(request.getTipoEntidad())) {
+            throw new BusinessException(
+                    String.format("Tipo de entidad no válido: %s. Valores permitidos: BANCO, SERVICIO", request.getTipoEntidad()));
+        }
+
+        // Validar unicidad de tipoEntidad + denominacion, excluyendo la entidad actual
+        repository.findByTipoEntidadAndDenominacion(request.getTipoEntidad(), request.getDenominacion())
+                .ifPresent(existing -> {
+                    if (!existing.getId().equals(id)) {
+                        throw new BusinessException(
+                                String.format("Ya existe otra entidad financiera con tipo '%s' y denominación '%s'",
+                                        request.getTipoEntidad(), request.getDenominacion()));
+                    }
+                });
 
         mapper.updateEntityFromRequest(request, entity);
         entity = repository.save(entity);

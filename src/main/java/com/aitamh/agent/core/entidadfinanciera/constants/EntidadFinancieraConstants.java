@@ -5,8 +5,8 @@ package com.aitamh.agent.core.entidadfinanciera.constants;
  */
 public class EntidadFinancieraConstants {
 
-    public static final String TIPO_BANCO = "banco";
-    public static final String TIPO_SERVICIO = "servicio";
+    public static final String TIPO_BANCO = "BANCO";
+    public static final String TIPO_SERVICIO = "SERVICIO";
 
     public static final int DEFAULT_PAGE = 0;
     public static final int DEFAULT_PAGE_SIZE = 20;

@@ -23,5 +23,15 @@ public interface EntidadFinancieraRepository extends JpaRepository<EntidadFinanc
     List<EntidadFinanciera> findByActivoAndEstado(Boolean activo, Boolean estado);
 
     boolean existsByCodigoEntidad(String codigoEntidad);
+
+    /**
+     * Busca una entidad por su tipo y denominación.
+     * Utilizado para validar que no exista duplicados de tipo + denominación.
+     *
+     * @param tipoEntidad tipo de la entidad
+     * @param denominacion denominación de la entidad
+     * @return Optional con la entidad si existe, vacío en caso contrario
+     */
+    Optional<EntidadFinanciera> findByTipoEntidadAndDenominacion(String tipoEntidad, String denominacion);
 }
 
