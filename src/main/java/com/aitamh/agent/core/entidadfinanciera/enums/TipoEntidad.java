@@ -5,7 +5,8 @@ package com.aitamh.agent.core.entidadfinanciera.enums;
  */
 public enum TipoEntidad {
     BANCO("Banco"),
-    SERVICIO("Servicio");
+    SERVICIO("Servicio"),
+    TODOS("Todos");
 
     private final String descripcion;
 
@@ -24,7 +25,6 @@ public enum TipoEntidad {
      * @return true si el valor es válido, false en caso contrario
      */
     public static boolean isValido(String valor) {
-
 
         if (valor == null || valor.trim().isEmpty()) {
             return false;

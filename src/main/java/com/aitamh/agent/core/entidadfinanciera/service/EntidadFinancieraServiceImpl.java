@@ -82,7 +82,10 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
     public PageResponse<EntidadFinancieraResponse> findByTipo(String tipoEntidad, Pageable pageable) {
         if (!TipoEntidad.isValido(tipoEntidad)) {
             throw new BusinessException(
-                    String.format("Tipo de entidad no válido: %s. Valores permitidos: BANCO, SERVICIO", tipoEntidad));
+                    String.format("Tipo de entidad no válido: %s. Valores permitidos: BANCO, SERVICIO, TODOS", tipoEntidad));
+        }
+        if (tipoEntidad.equalsIgnoreCase("TODOS")) {
+            return findAll(pageable);
         }
 
         Page<EntidadFinanciera> page = repository.findByTipoEntidadAndActivo(tipoEntidad, true, pageable);
@@ -151,12 +154,5 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
                 .build();
     }
 
-    private void validateUniqueCodigoEntidad(String codigoEntidad, Long excludeId) {
-        repository.findByCodigoEntidad(codigoEntidad).ifPresent(existing -> {
-            if (excludeId == null || !existing.getId().equals(excludeId)) {
-                throw new BusinessException("El código de entidad ya existe");
-            }
-        });
-    }
 }
 

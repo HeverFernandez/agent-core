@@ -84,6 +84,7 @@ public class SaldoServiceImpl implements SaldoService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Saldo no encontrado: %d", id)));
 
+        validateUniqueActiveOrBlockedSaldo(request.getEntidadFinancieraId());
         validateSaldoRequest(request);
         mapper.updateEntityFromRequest(request, entity);
         entity = repository.save(entity);

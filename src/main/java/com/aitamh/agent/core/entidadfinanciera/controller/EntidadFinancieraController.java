@@ -47,24 +47,10 @@ public class EntidadFinancieraController {
         return ResponseEntity.ok(ApiResponse.success(response, "EntidadFinanciera obtenida"));
     }
 
-    @Operation(summary = "Listar todas las EntidadesFinancieras")
-    @GetMapping
-    public ResponseEntity<ApiResponse<PageResponse<EntidadFinancieraResponse>>> findAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE + "") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "DESC") Sort.Direction direction) {
-
-        size = Math.min(size, MAX_PAGE_SIZE);
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        PageResponse<EntidadFinancieraResponse> response = service.findAll(pageable);
-        return ResponseEntity.ok(ApiResponse.success(response, "Listado de EntidadesFinancieras"));
-    }
-
     @Operation(summary = "Listar EntidadesFinancieras por tipo")
-    @GetMapping("/search")
+    @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<EntidadFinancieraResponse>>> findByTipo(
-            @RequestParam String tipo,
+            @RequestParam(defaultValue = "TODOS") String tipo,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = DEFAULT_PAGE_SIZE + "") int size,
             @RequestParam(defaultValue = "id") String sortBy,
