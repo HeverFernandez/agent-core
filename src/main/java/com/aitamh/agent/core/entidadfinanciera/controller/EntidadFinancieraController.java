@@ -40,8 +40,8 @@ public class EntidadFinancieraController {
                 .body(ApiResponse.success(response, "EntidadFinanciera creada exitosamente"));
     }
 
-    @Operation(summary = "Obtener una EntidadFinanciera por ID")
-    @GetMapping("/{id}")
+    @Operation(summary = "Obtener una EntidadFinanciera por campo")
+    @GetMapping("/{campo}")
     public ResponseEntity<ApiResponse<EntidadFinancieraResponse>> findById(@PathVariable Long id) {
         EntidadFinancieraResponse response = service.findById(id);
         return ResponseEntity.ok(ApiResponse.success(response, "EntidadFinanciera obtenida"));
@@ -51,6 +51,7 @@ public class EntidadFinancieraController {
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<EntidadFinancieraResponse>>> findByTipo(
             @RequestParam(defaultValue = "TODOS") String tipo,
+            @RequestParam(defaultValue = "") String searchTerm,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = DEFAULT_PAGE_SIZE + "") int size,
             @RequestParam(defaultValue = "id") String sortBy,
@@ -58,7 +59,7 @@ public class EntidadFinancieraController {
 
         size = Math.min(size, MAX_PAGE_SIZE);
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        PageResponse<EntidadFinancieraResponse> response = service.findByTipo(tipo, pageable);
+        PageResponse<EntidadFinancieraResponse> response = service.findByTipo(tipo, searchTerm, pageable);
         return ResponseEntity.ok(ApiResponse.success(response, "Listado de EntidadesFinancieras por tipo"));
     }
 

@@ -15,9 +15,9 @@ public interface EntidadFinancieraService {
 
     EntidadFinancieraResponse findById(Long id);
 
-    PageResponse<EntidadFinancieraResponse> findAll(Pageable pageable);
+//    PageResponse<EntidadFinancieraResponse> findAll(Pageable pageable);
 
-    PageResponse<EntidadFinancieraResponse> findByTipo(String tipoEntidad, Pageable pageable);
+    PageResponse<EntidadFinancieraResponse> findByTipo(String tipoEntidad, String searchTerm, Pageable pageable);
 
     EntidadFinancieraResponse update(Long id, EntidadFinancieraRequest request);
 

@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+import static com.aitamh.agent.core.saldo.constants.SaldoConstants.CREATED_SALDO;
+
 /**
  * Controlador REST para Saldo.
  */
@@ -37,7 +39,7 @@ public class SaldoController {
             @Valid @RequestBody SaldoRequest request) {
         SaldoResponse response = service.create(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(response, "Saldo creado exitosamente"));
+                .body(ApiResponse.success(response, CREATED_SALDO));
     }
 
     @Operation(summary = "Obtener un Saldo por ID")
@@ -65,6 +67,7 @@ public class SaldoController {
     @GetMapping("/entidad/{entidadFinancieraId}")
     public ResponseEntity<ApiResponse<PageResponse<SaldoResponse>>> findByEntidadFinanciera(
             @PathVariable Long entidadFinancieraId,
+            @RequestParam(defaultValue = "ACTIVO") int estado,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = DEFAULT_PAGE_SIZE + "") int size,
             @RequestParam(defaultValue = "id") String sortBy,

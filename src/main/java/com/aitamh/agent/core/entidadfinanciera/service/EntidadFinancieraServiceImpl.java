@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.aitamh.agent.core.entidadfinanciera.constants.EntidadFinancieraConstants.*;
+
 /**
  * Implementación del servicio para EntidadFinanciera.
  */
@@ -37,14 +39,14 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
         // Validar que el tipo de entidad sea válido
         if (!TipoEntidad.isValido(request.getTipoEntidad())) {
             throw new BusinessException(
-                    String.format("Tipo de entidad no válido: %s. Valores permitidos: BANCO, SERVICIO", request.getTipoEntidad()));
+                    String.format(TIPOS_PERMITIDOS, request.getTipoEntidad()));
         }
 
         // Validar unicidad de tipoEntidad + denominacion
         repository.findByTipoEntidadAndDenominacion(request.getTipoEntidad(), request.getDenominacion())
                 .ifPresent(existing -> {
                     throw new BusinessException(
-                            String.format("Ya existe una entidad financiera con tipo '%s' y denominación '%s'",
+                            String.format(EXIST_ENTIDAD,
                                     request.getTipoEntidad(), request.getDenominacion()));
                 });
 
@@ -66,11 +68,11 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
     public EntidadFinancieraResponse findById(Long id) {
         EntidadFinanciera entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("EntidadFinanciera no encontrada: %d", id)));
+                        String.format(NOT_FOUND_ENTIDAD, id)));
         return mapper.toResponse(entity);
     }
 
-    @Override
+//    @Override
     @Transactional(readOnly = true)
     public PageResponse<EntidadFinancieraResponse> findAll(Pageable pageable) {
         Page<EntidadFinanciera> page = repository.findByActivo(true, pageable);
@@ -79,13 +81,38 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<EntidadFinancieraResponse> findByTipo(String tipoEntidad, Pageable pageable) {
+    public PageResponse<EntidadFinancieraResponse> findByTipo(String tipoEntidad, String searchTerm, Pageable pageable) {
+        String term = (searchTerm == null) ? "" : searchTerm.trim();
+        // If a searchTerm is provided, validate minimum length and perform search
+        if (!term.isEmpty()) {
+            if (term.length() < 3) {
+                throw new BusinessException("El término de búsqueda debe tener al menos 3 caracteres");
+            }
+
+            // If tipoEntidad == TODOS -> search across all active entities
+            if ("TODOS".equalsIgnoreCase(tipoEntidad)) {
+                Page<EntidadFinanciera> page = repository.searchAllByDenominacionOrCodigo(term, pageable);
+                return buildPageResponse(page);
+            }
+
+            // Validate tipoEntidad when not TODOS
+            if (!TipoEntidad.isValido(tipoEntidad)) {
+                throw new BusinessException(
+                        String.format(TIPOS_PERMITIDOS, tipoEntidad));
+            }
+
+            Page<EntidadFinanciera> page = repository.searchByTipoAndDenominacionOrCodigo(tipoEntidad, term, pageable);
+            return buildPageResponse(page);
+        }
+
+        // No search term: default behavior
+        if ("TODOS".equalsIgnoreCase(tipoEntidad)) {
+            return findAll(pageable);
+        }
+
         if (!TipoEntidad.isValido(tipoEntidad)) {
             throw new BusinessException(
-                    String.format("Tipo de entidad no válido: %s. Valores permitidos: BANCO, SERVICIO, TODOS", tipoEntidad));
-        }
-        if (tipoEntidad.equalsIgnoreCase("TODOS")) {
-            return findAll(pageable);
+                    String.format(TIPOS_PERMITIDOS, tipoEntidad));
         }
 
         Page<EntidadFinanciera> page = repository.findByTipoEntidadAndActivo(tipoEntidad, true, pageable);
@@ -96,12 +123,12 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
     public EntidadFinancieraResponse update(Long id, EntidadFinancieraRequest request) {
         EntidadFinanciera entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("EntidadFinanciera no encontrada: %d", id)));
+                        String.format(NOT_FOUND_ENTIDAD, id)));
 
         // Validar que el tipo de entidad sea válido
         if (!TipoEntidad.isValido(request.getTipoEntidad())) {
             throw new BusinessException(
-                    String.format("Tipo de entidad no válido: %s. Valores permitidos: BANCO, SERVICIO", request.getTipoEntidad()));
+                    String.format(TIPOS_PERMITIDOS, request.getTipoEntidad()));
         }
 
         // Validar unicidad de tipoEntidad + denominacion, excluyendo la entidad actual
@@ -109,7 +136,7 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
                 .ifPresent(existing -> {
                     if (!existing.getId().equals(id)) {
                         throw new BusinessException(
-                                String.format("Ya existe otra entidad financiera con tipo '%s' y denominación '%s'",
+                                String.format(EXIST_ENTIDAD,
                                         request.getTipoEntidad(), request.getDenominacion()));
                     }
                 });
@@ -125,7 +152,7 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
     public void delete(Long id) {
         EntidadFinanciera entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("EntidadFinanciera no encontrada: %d", id)));
+                        String.format(NOT_FOUND_ENTIDAD, id)));
 
         entity.setActivo(false);
         repository.save(entity);
@@ -153,6 +180,5 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
                 .isLast(page.isLast())
                 .build();
     }
-
 }
 

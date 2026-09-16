@@ -7,6 +7,8 @@ public class SaldoConstants {
 
     public static final String ESTADO_ACTIVO = "activo";
     public static final String ESTADO_INACTIVO = "inactivo";
+    public static final String CREATED_SALDO = "Saldo asignado exitosamente a entidad";
+
 
     public static final int DEFAULT_PAGE = 0;
     public static final int DEFAULT_PAGE_SIZE = 20;

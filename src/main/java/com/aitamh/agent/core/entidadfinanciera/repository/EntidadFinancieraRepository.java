@@ -4,6 +4,8 @@ import com.aitamh.agent.core.entidadfinanciera.entity.EntidadFinanciera;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
@@ -33,5 +35,11 @@ public interface EntidadFinancieraRepository extends JpaRepository<EntidadFinanc
      * @return Optional con la entidad si existe, vacío en caso contrario
      */
     Optional<EntidadFinanciera> findByTipoEntidadAndDenominacion(String tipoEntidad, String denominacion);
+
+    @Query("SELECT e FROM EntidadFinanciera e WHERE e.tipoEntidad = :tipo AND e.activo = true AND (LOWER(e.denominacion) LIKE LOWER(CONCAT('%', :term, '%')) OR LOWER(e.codigoEntidad) LIKE LOWER(CONCAT('%', :term, '%')))" )
+    Page<EntidadFinanciera> searchByTipoAndDenominacionOrCodigo(@Param("tipo") String tipo, @Param("term") String term, Pageable pageable);
+
+    @Query("SELECT e FROM EntidadFinanciera e WHERE e.activo = true AND (LOWER(e.denominacion) LIKE LOWER(CONCAT('%', :term, '%')) OR LOWER(e.codigoEntidad) LIKE LOWER(CONCAT('%', :term, '%')))" )
+    Page<EntidadFinanciera> searchAllByDenominacionOrCodigo(@Param("term") String term, Pageable pageable);
 }
 
