@@ -40,8 +40,8 @@ public class EntidadFinancieraController {
                 .body(ApiResponse.success(response, "EntidadFinanciera creada exitosamente"));
     }
 
-    @Operation(summary = "Obtener una EntidadFinanciera por campo")
-    @GetMapping("/{campo}")
+    @Operation(summary = "Obtener una EntidadFinanciera por ID")
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<EntidadFinancieraResponse>> findById(@PathVariable Long id) {
         EntidadFinancieraResponse response = service.findById(id);
         return ResponseEntity.ok(ApiResponse.success(response, "EntidadFinanciera obtenida"));
