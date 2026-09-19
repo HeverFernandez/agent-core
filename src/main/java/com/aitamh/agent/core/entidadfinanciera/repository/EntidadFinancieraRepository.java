@@ -22,7 +22,7 @@ public interface EntidadFinancieraRepository extends JpaRepository<EntidadFinanc
 
     Page<EntidadFinanciera> findByActivo(Boolean activo, Pageable pageable);
 
-    List<EntidadFinanciera> findByActivoAndEstado(Boolean activo, Boolean estado);
+    List<EntidadFinanciera> findByTipoEntidadAndActivoAndEstado(String tipoEntidad, Boolean activo, Boolean estado);
 
     boolean existsByCodigoEntidad(String codigoEntidad);
 

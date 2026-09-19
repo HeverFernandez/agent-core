@@ -29,7 +29,6 @@ public class OperacionRequest {
 
     private BigDecimal comision;
 
-    @NotBlank(message = "La descripción es requerida")
     private String descripcionOperacion;
 
     @NotBlank(message = "El número de referencia es requerido")

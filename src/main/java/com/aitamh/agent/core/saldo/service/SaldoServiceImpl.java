@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.aitamh.agent.core.saldo.constants.SaldoConstants.EXIST_SALDO;
+
 /**
  * Implementación del servicio para Saldo.
  */
@@ -58,8 +60,20 @@ public class SaldoServiceImpl implements SaldoService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<SaldoResponse> findAll(Pageable pageable) {
-        Page<Saldo> page = repository.findByEstado(EstadoSaldo.ACTIVO, pageable);
+    public PageResponse<SaldoResponse> findAll(String entidad, String estado, Pageable pageable) {
+        EstadoSaldo estadoSaldo = EstadoSaldo.valueOf(estado.toUpperCase());
+
+        if (entidad != null && !entidad.isBlank()) {
+            String entidadBusqueda = entidad.trim();
+            if (entidadBusqueda.length() < 3) {
+                throw new BusinessException("El término de búsqueda de entidad debe tener al menos 3 caracteres");
+            }
+
+            Page<Saldo> page = repository.findByEntidadFinancieraDenominacionAndEstado(entidadBusqueda, estadoSaldo, pageable);
+            return buildPageResponse(page);
+        }
+
+        Page<Saldo> page = repository.findByEstado(estadoSaldo, pageable);
         return buildPageResponse(page);
     }
 
@@ -67,14 +81,6 @@ public class SaldoServiceImpl implements SaldoService {
     @Transactional(readOnly = true)
     public PageResponse<SaldoResponse> findByEntidadFinanciera(Long entidadFinancieraId, Pageable pageable) {
         Page<Saldo> page = repository.findByEntidadFinancieraId(entidadFinancieraId, pageable);
-        return buildPageResponse(page);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public PageResponse<SaldoResponse> findByEstado(String estado, Pageable pageable) {
-        EstadoSaldo estadoSaldo = EstadoSaldo.valueOf(estado.toUpperCase());
-        Page<Saldo> page = repository.findByEstado(estadoSaldo, pageable);
         return buildPageResponse(page);
     }
 
@@ -159,7 +165,7 @@ public class SaldoServiceImpl implements SaldoService {
 
         if (exists) {
             throw new BusinessException(
-                    String.format("Ya existe un saldo activo o bloqueado para la entidad financiera %d", entidadFinancieraId));
+                    String.format(EXIST_SALDO, entidadFinancieraId));
         }
     }
 }

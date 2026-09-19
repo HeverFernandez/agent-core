@@ -26,6 +26,10 @@ public interface SaldoRepository extends JpaRepository<Saldo, Long> {
     @EntityGraph(attributePaths = {"entidadFinanciera"})
     Page<Saldo> findByEstado(EstadoSaldo estado, Pageable pageable);
 
+    @EntityGraph(attributePaths = {"entidadFinanciera"})
+    @Query("select s from Saldo s join s.entidadFinanciera ef where lower(ef.denominacion) like lower(concat('%', :entidad, '%')) and s.estado = :estado")
+    Page<Saldo> findByEntidadFinancieraDenominacionAndEstado(String entidad, EstadoSaldo estado, Pageable pageable);
+
     List<Saldo> findByEntidadFinancieraIdAndEstado(Long entidadFinancieraId, EstadoSaldo estado);
 
     boolean existsByEntidadFinancieraIdAndEstadoIn(Long entidadFinancieraId, Collection<EstadoSaldo> estados);

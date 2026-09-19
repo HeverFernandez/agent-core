@@ -16,11 +16,9 @@ public interface SaldoService {
 
     SaldoResponse findById(Long id);
 
-    PageResponse<SaldoResponse> findAll(Pageable pageable);
+    PageResponse<SaldoResponse> findAll(String entidad, String estado, Pageable pageable);
 
     PageResponse<SaldoResponse> findByEntidadFinanciera(Long entidadFinancieraId, Pageable pageable);
-
-    PageResponse<SaldoResponse> findByEstado(String estado, Pageable pageable);
 
     SaldoResponse update(Long id, SaldoRequest request);
 

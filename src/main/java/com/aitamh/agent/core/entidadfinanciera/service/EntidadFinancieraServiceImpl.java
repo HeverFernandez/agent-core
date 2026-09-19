@@ -72,7 +72,15 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
         return mapper.toResponse(entity);
     }
 
-//    @Override
+    @Override
+    @Transactional(readOnly = true)
+    public List<EntidadFinancieraResponse> getAllActive() {
+        return repository.findByTipoEntidadAndActivoAndEstado("BANCO", true, true)
+                .stream()
+                .map(mapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
     @Transactional(readOnly = true)
     public PageResponse<EntidadFinancieraResponse> findAll(Pageable pageable) {
         Page<EntidadFinanciera> page = repository.findByActivo(true, pageable);
@@ -158,15 +166,6 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
         repository.save(entity);
 
         log.info("EntidadFinanciera eliminada: {}", id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<EntidadFinancieraResponse> getAllActive() {
-        return repository.findByActivoAndEstado(true, true)
-                .stream()
-                .map(mapper::toResponse)
-                .collect(Collectors.toList());
     }
 
     private PageResponse<EntidadFinancieraResponse> buildPageResponse(Page<EntidadFinanciera> page) {
