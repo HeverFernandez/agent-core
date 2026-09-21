@@ -48,9 +48,14 @@ public class OperacionController {
         return ResponseEntity.ok(ApiResponse.success(response, "Operación obtenida"));
     }
 
-    @Operation(summary = "Listar todas las Operaciones")
+    @Operation(summary = "Listar Operaciones")
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<OperacionResponse>>> findAll(
+            @RequestParam(defaultValue = "Todos") String tipoOperacion,
+            @RequestParam(defaultValue = "COMPLETADA") String estadoOperacion,
+            @RequestParam(required = false) Long entidad,
+            @RequestParam(required = false) String finicio,
+            @RequestParam(required = false) String ffin,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = DEFAULT_PAGE_SIZE + "") int size,
             @RequestParam(defaultValue = "id") String sortBy,
@@ -58,38 +63,8 @@ public class OperacionController {
 
         size = Math.min(size, MAX_PAGE_SIZE);
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        PageResponse<OperacionResponse> response = service.findAll(pageable);
+        PageResponse<OperacionResponse> response = service.findAll(tipoOperacion, estadoOperacion, entidad, finicio, ffin, pageable);
         return ResponseEntity.ok(ApiResponse.success(response, "Listado de Operaciones"));
-    }
-
-    @Operation(summary = "Listar Operaciones por tipo")
-    @GetMapping("/tipo/{tipoOperacion}")
-    public ResponseEntity<ApiResponse<PageResponse<OperacionResponse>>> findByTipo(
-            @PathVariable String tipoOperacion,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE + "") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "DESC") Sort.Direction direction) {
-
-        size = Math.min(size, MAX_PAGE_SIZE);
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        PageResponse<OperacionResponse> response = service.findByTipo(tipoOperacion, pageable);
-        return ResponseEntity.ok(ApiResponse.success(response, "Listado de Operaciones por tipo"));
-    }
-
-    @Operation(summary = "Listar Operaciones por Entidad Financiera")
-    @GetMapping("/entidad/{idEntidadFinanciera}")
-    public ResponseEntity<ApiResponse<PageResponse<OperacionResponse>>> findByEntidadFinanciera(
-            @PathVariable Long idEntidadFinanciera,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE + "") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "DESC") Sort.Direction direction) {
-
-        size = Math.min(size, MAX_PAGE_SIZE);
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        PageResponse<OperacionResponse> response = service.findByEntidadFinanciera(idEntidadFinanciera, pageable);
-        return ResponseEntity.ok(ApiResponse.success(response, "Listado de Operaciones por Entidad"));
     }
 
     @Operation(summary = "Listar Operaciones por Usuario")
@@ -105,41 +80,6 @@ public class OperacionController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         PageResponse<OperacionResponse> response = service.findByUsuario(usuarioId, pageable);
         return ResponseEntity.ok(ApiResponse.success(response, "Listado de Operaciones por Usuario"));
-    }
-
-    @Operation(summary = "Listar Operaciones por estado")
-    @GetMapping("/estado/{estadoOperacion}")
-    public ResponseEntity<ApiResponse<PageResponse<OperacionResponse>>> findByEstado(
-            @PathVariable String estadoOperacion,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE + "") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "DESC") Sort.Direction direction) {
-
-        size = Math.min(size, MAX_PAGE_SIZE);
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        PageResponse<OperacionResponse> response = service.findByEstado(estadoOperacion, pageable);
-        return ResponseEntity.ok(ApiResponse.success(response, "Listado de Operaciones por estado"));
-    }
-
-    @Operation(summary = "Listar Operaciones por rango de fechas")
-    @GetMapping("/fecha-range")
-    public ResponseEntity<ApiResponse<PageResponse<OperacionResponse>>> findByFechaBetween(
-            @RequestParam String inicio,
-            @RequestParam String fin,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE + "") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "DESC") Sort.Direction direction) {
-
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-        LocalDateTime fechaInicio = LocalDateTime.parse(inicio, formatter);
-        LocalDateTime fechaFin = LocalDateTime.parse(fin, formatter);
-
-        size = Math.min(size, MAX_PAGE_SIZE);
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        PageResponse<OperacionResponse> response = service.findByFechaBetween(fechaInicio, fechaFin, pageable);
-        return ResponseEntity.ok(ApiResponse.success(response, "Listado de Operaciones por rango de fechas"));
     }
 
     @Operation(summary = "Listar Operaciones por tipo y Entidad Financiera")

@@ -5,6 +5,7 @@ import com.aitamh.agent.core.common.exception.EntityNotFoundException;
 import com.aitamh.agent.core.common.exception.OperacionInvalidaException;
 import com.aitamh.agent.core.common.exception.SaldoInsuficienteException;
 import com.aitamh.agent.core.common.exception.SaldoNotFoundException;
+import com.aitamh.agent.core.operacion.constants.EstadoOperacion;
 import com.aitamh.agent.core.operacion.constants.TipoOperacion;
 import com.aitamh.agent.core.operacion.dto.OperacionRequest;
 import com.aitamh.agent.core.operacion.dto.OperacionResponse;
@@ -82,7 +83,7 @@ public class OperacionServiceImpl implements OperacionService {
 
         // Registrar operación
         Operacion entity = mapper.toEntity(request);
-        entity.setEstadoOperacion("completada");
+        entity.setEstadoOperacion(EstadoOperacion.COMPLETADA);
         entity.setActivo(true);
         entity = repository.save(entity);
 
@@ -101,26 +102,74 @@ public class OperacionServiceImpl implements OperacionService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<OperacionResponse> findAll(Pageable pageable) {
-        LocalDate hoy = LocalDate.now();
-        LocalDateTime inicioDelDia = LocalDateTime.of(hoy, LocalTime.MIN);
-        LocalDateTime finDelDia = LocalDateTime.of(hoy, LocalTime.MAX);
+    public PageResponse<OperacionResponse> findAll(
+            String tipoOperacion, String estadoOperacion, Long entidad, String finicio, String ffin, Pageable pageable) {
 
-        Page<Operacion> page = repository.findByFechaOperacionBetweenAndActivo(inicioDelDia, finDelDia, true, pageable);
-        return buildPageResponse(page);
-    }
+        // Paso 1: Resolver rango de fechas
+        LocalDateTime fechaInicio;
+        LocalDateTime fechaFin;
 
-    @Override
-    @Transactional(readOnly = true)
-    public PageResponse<OperacionResponse> findByTipo(String tipoOperacion, Pageable pageable) {
-        Page<Operacion> page = repository.findByTipoOperacionAndActivo(tipoOperacion, true, pageable);
-        return buildPageResponse(page);
-    }
+        if (finicio == null || finicio.trim().isEmpty()) {
+            LocalDate hoy = LocalDate.now();
+            fechaInicio = LocalDateTime.of(hoy, LocalTime.MIN);
+        } else {
+            fechaInicio = LocalDateTime.parse(finicio.trim());
+        }
 
-    @Override
-    @Transactional(readOnly = true)
-    public PageResponse<OperacionResponse> findByEntidadFinanciera(Long idEntidadFinanciera, Pageable pageable) {
-        Page<Operacion> page = repository.findByIdEntidadFinancieraAndActivo(idEntidadFinanciera, true, pageable);
+        if (ffin == null || ffin.trim().isEmpty()) {
+            LocalDate hoy = LocalDate.now();
+            fechaFin = LocalDateTime.of(hoy, LocalTime.MAX);
+        } else {
+            fechaFin = LocalDateTime.parse(ffin.trim());
+        }
+
+        // Paso 2: Resolver tipo de operación
+        TipoOperacion tipo = null;
+        if (tipoOperacion != null && !tipoOperacion.trim().isEmpty() && !"Todos".equalsIgnoreCase(tipoOperacion.trim())) {
+            try {
+                tipo = TipoOperacion.valueOf(tipoOperacion.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new OperacionInvalidaException(
+                        String.format("Tipo de operación no válido: %s", tipoOperacion));
+            }
+        }
+
+        // Paso 3: Resolver estado de operación
+        EstadoOperacion estado;
+        try {
+            estado = EstadoOperacion.valueOf(estadoOperacion.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new OperacionInvalidaException(
+                    String.format("Estado de operación no válido: %s", estadoOperacion));
+        }
+
+        // Paso 4: Ejecutar query según combinación de filtros
+        Page<Operacion> page;
+
+        if (entidad == null || entidad == 0) {
+            // Sin filtro de entidad
+            if (tipo == null) {
+                // Sin tipo de operación
+                page = repository.findByEstadoOperacionAndFechaOperacionBetweenAndActivo(
+                        estado, fechaInicio, fechaFin, true, pageable);
+            } else {
+                // Con tipo de operación
+                page = repository.findByTipoOperacionAndEstadoOperacionAndFechaOperacionBetweenAndActivo(
+                        tipo, estado, fechaInicio, fechaFin, true, pageable);
+            }
+        } else {
+            // Con filtro de entidad
+            if (tipo == null) {
+                // Sin tipo de operación
+                page = repository.findByIdEntidadFinancieraAndEstadoOperacionAndFechaOperacionBetweenAndActivo(
+                        entidad, estado, fechaInicio, fechaFin, true, pageable);
+            } else {
+                // Con tipo de operación
+                page = repository.findByIdEntidadFinancieraAndTipoOperacionAndEstadoOperacionAndFechaOperacionBetweenAndActivo(
+                        entidad, tipo, estado, fechaInicio, fechaFin, true, pageable);
+            }
+        }
+
         return buildPageResponse(page);
     }
 
@@ -128,20 +177,6 @@ public class OperacionServiceImpl implements OperacionService {
     @Transactional(readOnly = true)
     public PageResponse<OperacionResponse> findByUsuario(Long usuarioId, Pageable pageable) {
         Page<Operacion> page = repository.findByUsuarioIdAndActivo(usuarioId, true, pageable);
-        return buildPageResponse(page);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public PageResponse<OperacionResponse> findByEstado(String estadoOperacion, Pageable pageable) {
-        Page<Operacion> page = repository.findByEstadoOperacionAndActivo(estadoOperacion, true, pageable);
-        return buildPageResponse(page);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public PageResponse<OperacionResponse> findByFechaBetween(LocalDateTime inicio, LocalDateTime fin, Pageable pageable) {
-        Page<Operacion> page = repository.findByFechaOperacionBetweenAndActivo(inicio, fin, true, pageable);
         return buildPageResponse(page);
     }
 
@@ -158,7 +193,9 @@ public class OperacionServiceImpl implements OperacionService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Operación no encontrada: %d", id)));
 
-        entity.setTipoOperacion(request.getTipoOperacion());
+        TipoOperacion tipo = TipoOperacion.fromString(request.getTipoOperacion());
+
+        entity.setTipoOperacion(tipo);
         entity.setMontoOperacion(request.getMontoOperacion());
         entity.setDescripcionOperacion(request.getDescripcionOperacion());
         entity.setNumeroReferencia(request.getNumeroReferencia());

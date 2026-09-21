@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SaldoRequest {
+public class    SaldoRequest {
 
     @NotNull(message = "El ID de la entidad financiera es requerido")
     private Long entidadFinancieraId;

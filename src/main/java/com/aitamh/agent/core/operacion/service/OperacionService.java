@@ -15,17 +15,9 @@ public interface OperacionService {
 
     OperacionResponse findById(Long id);
 
-    PageResponse<OperacionResponse> findAll(Pageable pageable);
-
-    PageResponse<OperacionResponse> findByTipo(String tipoOperacion, Pageable pageable);
-
-    PageResponse<OperacionResponse> findByEntidadFinanciera(Long idEntidadFinanciera, Pageable pageable);
+    PageResponse<OperacionResponse> findAll(String tipoOperacion, String estadoOperacion, Long entidad, String finicio, String ffin, Pageable pageable);;
 
     PageResponse<OperacionResponse> findByUsuario(Long usuarioId, Pageable pageable);
-
-    PageResponse<OperacionResponse> findByEstado(String estadoOperacion, Pageable pageable);
-
-    PageResponse<OperacionResponse> findByFechaBetween(LocalDateTime inicio, LocalDateTime fin, Pageable pageable);
 
     PageResponse<OperacionResponse> findByTipoAndEntidad(String tipoOperacion, Long idEntidadFinanciera, Pageable pageable);
 

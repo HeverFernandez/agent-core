@@ -1,6 +1,8 @@
 package com.aitamh.agent.core.operacion.entity;
 
 import com.aitamh.agent.core.entidadfinanciera.entity.EntidadFinanciera;
+import com.aitamh.agent.core.operacion.constants.EstadoOperacion;
+import com.aitamh.agent.core.operacion.constants.TipoOperacion;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,8 +26,9 @@ public class Operacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "tipo_operacion", nullable = false, length = 50)
-    private String tipoOperacion; // retiro, deposito, pago de servicio
+    private TipoOperacion tipoOperacion; // retiro, deposito, pago de servicio
 
     @Column(name = "monto_operacion", nullable = false, precision = 15, scale = 2)
     private BigDecimal montoOperacion;
@@ -52,8 +55,9 @@ public class Operacion {
     @Column(name = "usuario_id")
     private Long usuarioId;
 
-    @Column(name = "estado_operacion", nullable = false, length = 50)
-    private String estadoOperacion; // pendiente, completada, anulada, fallida
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado_operacion", nullable = false, length = 100)
+    private EstadoOperacion estadoOperacion; // pendiente, completada, anulada, fallida
 
     @Column(name = "activo", nullable = false)
     private Boolean activo = true;
