@@ -21,6 +21,6 @@ public interface EntidadFinancieraService {
 
     void delete(Long id);
 
-    List<EntidadFinancieraResponse> getAllActive();
+    List<EntidadFinancieraResponse> getAllActive(String tipo);
 }
 

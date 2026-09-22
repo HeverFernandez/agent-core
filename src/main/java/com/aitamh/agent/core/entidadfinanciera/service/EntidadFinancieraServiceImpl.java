@@ -74,8 +74,8 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EntidadFinancieraResponse> getAllActive() {
-        return repository.findByTipoEntidadAndActivoAndEstado("BANCO", true, true)
+    public List<EntidadFinancieraResponse> getAllActive(String tipo) {
+        return repository.findByTipoEntidadAndActivoAndEstado(tipo, true, true)
                 .stream()
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());

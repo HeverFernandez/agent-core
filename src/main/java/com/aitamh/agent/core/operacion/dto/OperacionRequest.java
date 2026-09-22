@@ -32,7 +32,6 @@ public class OperacionRequest {
 
     private String descripcionOperacion;
 
-    @NotBlank(message = "El número de referencia es requerido")
     private String numeroReferencia;
 
     @NotNull(message = "El ID de la entidad financiera es requerido")

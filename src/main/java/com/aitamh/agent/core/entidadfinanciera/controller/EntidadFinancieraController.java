@@ -65,8 +65,10 @@ public class EntidadFinancieraController {
 
     @Operation(summary = "Obtener todas las EntidadesFinancieras activas")
     @GetMapping("/all/active")
-    public ResponseEntity<ApiResponse<List<EntidadFinancieraResponse>>> getAllActive() {
-        List<EntidadFinancieraResponse> response = service.getAllActive();
+    public ResponseEntity<ApiResponse<List<EntidadFinancieraResponse>>> getAllActive(
+            @RequestParam(defaultValue = "BANCO") String tipo
+    ) {
+        List<EntidadFinancieraResponse> response = service.getAllActive(tipo);
         return ResponseEntity.ok(ApiResponse.success(response, "Listado de EntidadesFinancieras activas"));
     }
 
