@@ -14,11 +14,14 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface SaldoMapper {
 
-    @Mapping(source = "entidadFinanciera.denominacion", target = "entidadDenominacion")
+    @Mapping(target = "entidad", source = "entidad.denominacion")
+    @Mapping(target = "idEntidad", source = "entidad.id")
     SaldoResponse toResponse(Saldo entity);
 
+    @Mapping(target = "entidad", ignore = true)
     Saldo toEntity(SaldoRequest request);
 
+    @Mapping(target = "entidad", ignore = true)
     void updateEntityFromRequest(SaldoRequest request, @MappingTarget Saldo entity);
 }
 

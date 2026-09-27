@@ -1,10 +1,11 @@
 package com.aitamh.agent.core.operacion.service;
 
 import com.aitamh.agent.core.common.dto.PageResponse;
-import com.aitamh.agent.core.common.exception.EntityNotFoundException;
-import com.aitamh.agent.core.common.exception.OperacionInvalidaException;
-import com.aitamh.agent.core.common.exception.SaldoInsuficienteException;
-import com.aitamh.agent.core.common.exception.SaldoNotFoundException;
+import com.aitamh.agent.core.common.exception.*;
+import com.aitamh.agent.core.entidadfinanciera.entity.Entidad;
+import com.aitamh.agent.core.entidadfinanciera.enums.EstadoEntidad;
+import com.aitamh.agent.core.entidadfinanciera.enums.TipoEntidad;
+import com.aitamh.agent.core.entidadfinanciera.repository.EntidadRepository;
 import com.aitamh.agent.core.operacion.constants.EstadoOperacion;
 import com.aitamh.agent.core.operacion.constants.TipoOperacion;
 import com.aitamh.agent.core.operacion.dto.OperacionRequest;
@@ -14,6 +15,9 @@ import com.aitamh.agent.core.operacion.mapper.OperacionMapper;
 import com.aitamh.agent.core.operacion.repository.OperacionRepository;
 import com.aitamh.agent.core.saldo.entity.Saldo;
 import com.aitamh.agent.core.saldo.enums.EstadoSaldo;
+import com.aitamh.agent.core.saldo.repository.SaldoRepository;
+import com.aitamh.agent.core.saldo.service.SaldoService;
+import com.aitamh.agent.core.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -38,28 +42,40 @@ public class OperacionServiceImpl implements OperacionService {
 
     private final OperacionRepository repository;
     private final OperacionMapper mapper;
-    private final com.aitamh.agent.core.saldo.repository.SaldoRepository saldoRepository;
-    private final com.aitamh.agent.core.saldo.service.SaldoService saldoService;
+    private final SaldoRepository saldoRepository;
+    private final SaldoService saldoService;
+    private final EntidadRepository entidadRepository;
+    private final UsuarioRepository usuarioRepository;
 
     @Override
     public OperacionResponse create(OperacionRequest request) {
 
+        Entidad banco = entidadRepository
+                .findById(request.getIdEntidadBanco())
+                .orElseThrow(() ->
+                        new BusinessException(
+                                "Entidad bancaria no encontrada"
+                        )
+                );
+
+        validarBanco(banco);
+
         // Validar tipo de operación
-        TipoOperacion tipo = TipoOperacion.fromString(request.getTipoOperacion());
+        TipoOperacion tipo = TipoOperacion.fromString(request.getTipo());
         if (tipo == null) {
             throw new OperacionInvalidaException(
-                    String.format("Tipo de operación no válido: %s", request.getTipoOperacion()));
+                    String.format("Tipo de operación no válido: %s", request.getTipo()));
         }
 
-        Long entidadId = request.getIdEntidadFinanciera();
+        Long entidadId = request.getIdEntidadBanco();
 
         // Obtener saldo con estado VIGENTE con bloqueo para evitar condiciones de carrera
         Saldo saldo = saldoRepository
-                .findTopByEntidadFinancieraIdAndEstadoForUpdate(entidadId, EstadoSaldo.ACTIVO)
+                .findTopByEntidadAndEstadoForUpdate(entidadId, EstadoSaldo.ACTIVO)
                 .orElseThrow(() -> new SaldoNotFoundException(
                         String.format("No existe un saldo con estado '%s' para la entidad financiera %d", EstadoSaldo.ACTIVO, entidadId)));
 
-        BigDecimal monto = request.getMontoOperacion();
+        BigDecimal monto = request.getMonto();
         BigDecimal nuevoMonto;
 
         switch (tipo) {
@@ -75,20 +91,21 @@ public class OperacionServiceImpl implements OperacionService {
                 break;
             default:
                 throw new OperacionInvalidaException(
-                        String.format("Tipo de operación no válido: %s", request.getTipoOperacion()));
+                        String.format("Tipo de operación no válido: %s", request.getTipo()));
         }
 
         saldo.setMontoDisponible(nuevoMonto);
         saldoRepository.save(saldo);
 
         // Registrar operación
-        Operacion entity = mapper.toEntity(request);
-        entity.setEstadoOperacion(EstadoOperacion.COMPLETADA);
-        entity.setActivo(true);
-        entity = repository.save(entity);
+        Operacion operacion = mapper.toEntity(request);
+        operacion.setEntidadBanco(banco);
+        operacion.setEstado(EstadoOperacion.COMPLETADA);
+        operacion.setActivo(true);
+        operacion = repository.save(operacion);
 
-        log.info("Operación creada: {}", entity.getId());
-        return mapper.toResponse(entity);
+        log.info("Operación creada: {}", operacion.getId());
+        return mapper.toResponse(operacion);
     }
 
     @Override
@@ -103,7 +120,7 @@ public class OperacionServiceImpl implements OperacionService {
     @Override
     @Transactional(readOnly = true)
     public PageResponse<OperacionResponse> findAll(
-            String tipoOperacion, String estadoOperacion, Long entidad, String finicio, String ffin, Pageable pageable) {
+            String tipoOperacion, String estadoOperacion, Long idEntidad, String finicio, String ffin, Pageable pageable) {
 
         // Paso 1: Resolver rango de fechas
         LocalDateTime fechaInicio;
@@ -146,26 +163,29 @@ public class OperacionServiceImpl implements OperacionService {
         // Paso 4: Ejecutar query según combinación de filtros
         Page<Operacion> page;
 
-        if (entidad == null || entidad == 0) {
+        if (idEntidad == null || idEntidad == 0) {
             // Sin filtro de entidad
             if (tipo == null) {
                 // Sin tipo de operación
-                page = repository.findByEstadoOperacionAndFechaOperacionBetweenAndActivo(
+                page = repository.findByEstadoAndFechaBetweenAndActivo(
                         estado, fechaInicio, fechaFin, true, pageable);
             } else {
                 // Con tipo de operación
-                page = repository.findByTipoOperacionAndEstadoOperacionAndFechaOperacionBetweenAndActivo(
+                page = repository.findByTipoAndEstadoAndFechaBetweenAndActivo(
                         tipo, estado, fechaInicio, fechaFin, true, pageable);
             }
         } else {
+            Entidad entidad = entidadRepository.findById(idEntidad)
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            String.format("Entidad bancaria no encontrada: %d", idEntidad)));
             // Con filtro de entidad
             if (tipo == null) {
                 // Sin tipo de operación
-                page = repository.findByIdEntidadFinancieraAndEstadoOperacionAndFechaOperacionBetweenAndActivo(
+                page = repository.findByEntidadBancoAndEstadoAndFechaBetweenAndActivo(
                         entidad, estado, fechaInicio, fechaFin, true, pageable);
             } else {
                 // Con tipo de operación
-                page = repository.findByIdEntidadFinancieraAndTipoOperacionAndEstadoOperacionAndFechaOperacionBetweenAndActivo(
+                page = repository.findByEntidadBancoAndTipoAndEstadoAndFechaBetweenAndActivo(
                         entidad, tipo, estado, fechaInicio, fechaFin, true, pageable);
             }
         }
@@ -183,7 +203,7 @@ public class OperacionServiceImpl implements OperacionService {
     @Override
     @Transactional(readOnly = true)
     public PageResponse<OperacionResponse> findByTipoAndEntidad(String tipoOperacion, Long idEntidadFinanciera, Pageable pageable) {
-        Page<Operacion> page = repository.findByTipoOperacionAndIdEntidadFinancieraAndActivo(tipoOperacion, idEntidadFinanciera, true, pageable);
+        Page<Operacion> page = repository.findByTipoAndEntidadBancoAndActivo(tipoOperacion, idEntidadFinanciera, true, pageable);
         return buildPageResponse(page);
     }
 
@@ -193,14 +213,16 @@ public class OperacionServiceImpl implements OperacionService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Operación no encontrada: %d", id)));
 
-        TipoOperacion tipo = TipoOperacion.fromString(request.getTipoOperacion());
+        TipoOperacion tipo = TipoOperacion.fromString(request.getTipo());
 
-        entity.setTipoOperacion(tipo);
-        entity.setMontoOperacion(request.getMontoOperacion());
-        entity.setDescripcionOperacion(request.getDescripcionOperacion());
+        entity.setTipo(tipo);
+        entity.setMonto(request.getMonto());
+        entity.setDescripcion(request.getDescripcion());
         entity.setNumeroReferencia(request.getNumeroReferencia());
-        entity.setIdEntidadFinanciera(request.getIdEntidadFinanciera());
-        entity.setUsuarioId(request.getUsuarioId());
+        entity.setEntidadBanco(request.getIdEntidadBanco() != null ? entidadRepository.findById(request.getIdEntidadBanco())
+                .orElseThrow(() -> new BusinessException("Entidad bancaria no encontrada")) : null);
+        entity.setUsuario(request.getUsuarioId() != null ? usuarioRepository.findById(request.getUsuarioId())
+                .orElseThrow(() -> new BusinessException("Usuario no encontrado")) : null);
 
         entity = repository.save(entity);
         log.info("Operación actualizada: {}", id);
@@ -216,6 +238,26 @@ public class OperacionServiceImpl implements OperacionService {
         entity.setActivo(false);
         repository.save(entity);
         log.info("Operación eliminada: {}", id);
+    }
+
+    private void validarBanco(Entidad entidad) {
+        if (entidad.getTipoEntidad() != TipoEntidad.BANCO) {
+            throw new BusinessException(
+                    "La entidad seleccionada no es un banco"
+            );
+        }
+
+        if (!entidad.isActivo()) {
+            throw new BusinessException(
+                    "El banco se encuentra inactivo"
+            );
+        }
+
+        if (entidad.getEstado() != EstadoEntidad.ACTIVA) {
+            throw new BusinessException(
+                    "El banco no se encuentra habilitado"
+            );
+        }
     }
 
     private PageResponse<OperacionResponse> buildPageResponse(Page<Operacion> page) {

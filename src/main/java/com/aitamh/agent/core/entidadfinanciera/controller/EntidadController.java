@@ -2,9 +2,9 @@ package com.aitamh.agent.core.entidadfinanciera.controller;
 
 import com.aitamh.agent.core.common.dto.ApiResponse;
 import com.aitamh.agent.core.common.dto.PageResponse;
-import com.aitamh.agent.core.entidadfinanciera.dto.EntidadFinancieraRequest;
-import com.aitamh.agent.core.entidadfinanciera.dto.EntidadFinancieraResponse;
-import com.aitamh.agent.core.entidadfinanciera.service.EntidadFinancieraService;
+import com.aitamh.agent.core.entidadfinanciera.dto.EntidadRequest;
+import com.aitamh.agent.core.entidadfinanciera.dto.EntidadResponse;
+import com.aitamh.agent.core.entidadfinanciera.service.EntidadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -24,32 +24,32 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/entidades-financieras")
 @RequiredArgsConstructor
-public class EntidadFinancieraController {
+public class EntidadController {
 
-    private final EntidadFinancieraService service;
+    private final EntidadService service;
 
     private static final int MAX_PAGE_SIZE = 100;
     private static final int DEFAULT_PAGE_SIZE = 20;
 
     @Operation(summary = "Crear una nueva EntidadFinanciera")
     @PostMapping
-    public ResponseEntity<ApiResponse<EntidadFinancieraResponse>> create(
-            @Valid @RequestBody EntidadFinancieraRequest request) {
-        EntidadFinancieraResponse response = service.create(request);
+    public ResponseEntity<ApiResponse<EntidadResponse>> create(
+            @Valid @RequestBody EntidadRequest request) {
+        EntidadResponse response = service.create(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(response, "EntidadFinanciera creada exitosamente"));
     }
 
     @Operation(summary = "Obtener una EntidadFinanciera por ID")
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<EntidadFinancieraResponse>> findById(@PathVariable Long id) {
-        EntidadFinancieraResponse response = service.findById(id);
+    public ResponseEntity<ApiResponse<EntidadResponse>> findById(@PathVariable Long id) {
+        EntidadResponse response = service.findById(id);
         return ResponseEntity.ok(ApiResponse.success(response, "EntidadFinanciera obtenida"));
     }
 
     @Operation(summary = "Listar EntidadesFinancieras por tipo")
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResponse<EntidadFinancieraResponse>>> findByTipo(
+    public ResponseEntity<ApiResponse<PageResponse<EntidadResponse>>> findByTipo(
             @RequestParam(defaultValue = "TODOS") String tipo,
             @RequestParam(defaultValue = "") String searchTerm,
             @RequestParam(defaultValue = "0") int page,
@@ -59,25 +59,25 @@ public class EntidadFinancieraController {
 
         size = Math.min(size, MAX_PAGE_SIZE);
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        PageResponse<EntidadFinancieraResponse> response = service.findByTipo(tipo, searchTerm, pageable);
+        PageResponse<EntidadResponse> response = service.findByTipo(tipo, searchTerm, pageable);
         return ResponseEntity.ok(ApiResponse.success(response, "Listado de EntidadesFinancieras por tipo"));
     }
 
     @Operation(summary = "Obtener todas las EntidadesFinancieras activas")
     @GetMapping("/all/active")
-    public ResponseEntity<ApiResponse<List<EntidadFinancieraResponse>>> getAllActive(
+    public ResponseEntity<ApiResponse<List<EntidadResponse>>> getAllActive(
             @RequestParam(defaultValue = "BANCO") String tipo
     ) {
-        List<EntidadFinancieraResponse> response = service.getAllActive(tipo);
+        List<EntidadResponse> response = service.getAllActive(tipo);
         return ResponseEntity.ok(ApiResponse.success(response, "Listado de EntidadesFinancieras activas"));
     }
 
     @Operation(summary = "Actualizar una EntidadFinanciera")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<EntidadFinancieraResponse>> update(
+    public ResponseEntity<ApiResponse<EntidadResponse>> update(
             @PathVariable Long id,
-            @Valid @RequestBody EntidadFinancieraRequest request) {
-        EntidadFinancieraResponse response = service.update(id, request);
+            @Valid @RequestBody EntidadRequest request) {
+        EntidadResponse response = service.update(id, request);
         return ResponseEntity.ok(ApiResponse.success(response, "EntidadFinanciera actualizada"));
     }
 

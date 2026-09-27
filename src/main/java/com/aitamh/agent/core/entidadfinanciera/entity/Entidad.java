@@ -1,10 +1,10 @@
 package com.aitamh.agent.core.entidadfinanciera.entity;
 
+import com.aitamh.agent.core.entidadfinanciera.enums.EstadoEntidad;
+import com.aitamh.agent.core.entidadfinanciera.enums.TipoEntidad;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 /**
@@ -12,18 +12,20 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "entidades_financieras")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class EntidadFinanciera {
+@ToString
+public class Entidad {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "tipo_entidad", nullable = false, length = 50)
-    private String tipoEntidad; // banco, servicio
+    private TipoEntidad tipoEntidad; // banco, servicio
 
     @Column(name = "denominacion", nullable = false, length = 255)
     private String denominacion;
@@ -34,12 +36,13 @@ public class EntidadFinanciera {
     @Column(name = "codigo_entidad", nullable = false, length = 50, unique = true)
     private String codigoEntidad;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
-    private Boolean estado = true;
+    private EstadoEntidad estado = EstadoEntidad.ACTIVA;
 
     //Para la eliminación lógica
     @Column(name = "activo", nullable = false)
-    private Boolean activo = true;
+    private boolean activo = true;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;

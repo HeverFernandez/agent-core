@@ -1,8 +1,11 @@
 package com.aitamh.agent.core.entidadfinanciera.enums;
 
+import lombok.Getter;
+
 /**
  * Enum que representa los tipos de entidades financieras permitidas.
  */
+@Getter
 public enum TipoEntidad {
     BANCO("Banco"),
     SERVICIO("Servicio"),
@@ -14,10 +17,6 @@ public enum TipoEntidad {
         this.descripcion = descripcion;
     }
 
-    public String getDescripcion() {
-        return descripcion;
-    }
-
     /**
      * Valida si un valor string corresponde a un tipo de entidad válido.
      *
@@ -27,13 +26,13 @@ public enum TipoEntidad {
     public static boolean isValido(String valor) {
 
         if (valor == null || valor.trim().isEmpty()) {
-            return false;
+            return true;
         }
         try {
             TipoEntidad.valueOf(valor.toUpperCase());
-            return true;
-        } catch (IllegalArgumentException e) {
             return false;
+        } catch (IllegalArgumentException e) {
+            return true;
         }
     }
 

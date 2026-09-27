@@ -1,5 +1,6 @@
 package com.aitamh.agent.core.operacion.repository;
 
+import com.aitamh.agent.core.entidadfinanciera.entity.Entidad;
 import com.aitamh.agent.core.operacion.constants.EstadoOperacion;
 import com.aitamh.agent.core.operacion.constants.TipoOperacion;
 import com.aitamh.agent.core.operacion.entity.Operacion;
@@ -16,27 +17,27 @@ import java.time.LocalDateTime;
 @Repository
 public interface OperacionRepository extends JpaRepository<Operacion, Long> {
 
-    @EntityGraph(attributePaths = {"entidadFinanciera"})
+//    @EntityGraph(attributePaths = {"entidadBanco"})
     Page<Operacion> findByUsuarioIdAndActivo(Long usuarioId, Boolean activo, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"entidadFinanciera"})
-    Page<Operacion> findByTipoOperacionAndIdEntidadFinancieraAndActivo(
+//    @EntityGraph(attributePaths = {"entidadBanco"})
+    Page<Operacion> findByTipoAndEntidadBancoAndActivo(
             String tipoOperacion, Long idEntidadFinanciera, Boolean activo, Pageable pageable);
 
     // Métodos para filtrado combinado con estado y rango de fechas
-    @EntityGraph(attributePaths = {"entidadFinanciera"})
-    Page<Operacion> findByEstadoOperacionAndFechaOperacionBetweenAndActivo(
+//    @EntityGraph(attributePaths = {"entidadBanco"})
+    Page<Operacion> findByEstadoAndFechaBetweenAndActivo(
             EstadoOperacion estado, LocalDateTime inicio, LocalDateTime fin, Boolean activo, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"entidadFinanciera"})
-    Page<Operacion> findByTipoOperacionAndEstadoOperacionAndFechaOperacionBetweenAndActivo(
+//    @EntityGraph(attributePaths = {"entidadBanco"})
+    Page<Operacion> findByTipoAndEstadoAndFechaBetweenAndActivo(
             TipoOperacion tipo, EstadoOperacion estado, LocalDateTime inicio, LocalDateTime fin, Boolean activo, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"entidadFinanciera"})
-    Page<Operacion> findByIdEntidadFinancieraAndEstadoOperacionAndFechaOperacionBetweenAndActivo(
-            Long idEntidad, EstadoOperacion estado, LocalDateTime inicio, LocalDateTime fin, Boolean activo, Pageable pageable);
+//    @EntityGraph(attributePaths = {"entidadBanco"})
+    Page<Operacion> findByEntidadBancoAndEstadoAndFechaBetweenAndActivo(
+            Entidad idEntidad, EstadoOperacion estado, LocalDateTime inicio, LocalDateTime fin, Boolean activo, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"entidadFinanciera"})
-    Page<Operacion> findByIdEntidadFinancieraAndTipoOperacionAndEstadoOperacionAndFechaOperacionBetweenAndActivo(
-            Long idEntidad, TipoOperacion tipo, EstadoOperacion estado, LocalDateTime inicio, LocalDateTime fin, Boolean activo, Pageable pageable);
+//    @EntityGraph(attributePaths = {"entidadBanco"})
+    Page<Operacion> findByEntidadBancoAndTipoAndEstadoAndFechaBetweenAndActivo(
+            Entidad idEntidad, TipoOperacion tipo, EstadoOperacion estado, LocalDateTime inicio, LocalDateTime fin, Boolean activo, Pageable pageable);
 }

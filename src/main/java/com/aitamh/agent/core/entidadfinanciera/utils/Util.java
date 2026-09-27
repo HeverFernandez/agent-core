@@ -1,10 +1,10 @@
 package com.aitamh.agent.core.entidadfinanciera.utils;
 
-import static com.aitamh.agent.core.entidadfinanciera.constants.EntidadFinancieraConstants.TIPO_BANCO;
-import static com.aitamh.agent.core.entidadfinanciera.constants.EntidadFinancieraConstants.TIPO_SERVICIO;
+import static com.aitamh.agent.core.entidadfinanciera.constants.EntidadConstants.TIPO_BANCO;
+import static com.aitamh.agent.core.entidadfinanciera.constants.EntidadConstants.TIPO_SERVICIO;
 
 import com.aitamh.agent.core.common.exception.BusinessException;
-import com.aitamh.agent.core.entidadfinanciera.dto.EntidadFinancieraRequest;
+import com.aitamh.agent.core.entidadfinanciera.dto.EntidadRequest;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
@@ -19,7 +19,7 @@ public class Util {
 
     private final SecureRandom random = new SecureRandom();
 
-    public String generaCodigoEntidad(EntidadFinancieraRequest request, Predicate<String> existeCodigo) {
+    public String generaCodigoEntidad(EntidadRequest request, Predicate<String> existeCodigo) {
 
         String codEntidad;
         if(request.getTipoEntidad().equalsIgnoreCase(TIPO_BANCO)) {

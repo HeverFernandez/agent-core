@@ -1,6 +1,5 @@
 package com.aitamh.agent.core.operacion.dto;
 
-import com.aitamh.agent.core.operacion.constants.TipoOperacion;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,20 +21,22 @@ import java.math.BigDecimal;
 public class OperacionRequest {
 
     @NotBlank(message = "El tipo de operación es requerido")
-    private String tipoOperacion;
+    private String tipo;
 
     @NotNull(message = "El monto de operación es requerido")
     @Positive(message = "El monto debe ser positivo")
-    private BigDecimal montoOperacion;
+    private BigDecimal monto;
 
     private BigDecimal comision;
 
-    private String descripcionOperacion;
+    private String descripcion;
 
     private String numeroReferencia;
 
     @NotNull(message = "El ID de la entidad financiera es requerido")
-    private Long idEntidadFinanciera;
+    private Long idEntidadBanco;
+
+    private Long idEntidadServicio;
 
     @NotNull(message = "El ID de usuario es requerido")
     private Long usuarioId;

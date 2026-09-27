@@ -3,12 +3,13 @@ package com.aitamh.agent.core.entidadfinanciera.service;
 import com.aitamh.agent.core.common.dto.PageResponse;
 import com.aitamh.agent.core.common.exception.BusinessException;
 import com.aitamh.agent.core.common.exception.EntityNotFoundException;
-import com.aitamh.agent.core.entidadfinanciera.dto.EntidadFinancieraRequest;
-import com.aitamh.agent.core.entidadfinanciera.dto.EntidadFinancieraResponse;
-import com.aitamh.agent.core.entidadfinanciera.entity.EntidadFinanciera;
+import com.aitamh.agent.core.entidadfinanciera.dto.EntidadRequest;
+import com.aitamh.agent.core.entidadfinanciera.dto.EntidadResponse;
+import com.aitamh.agent.core.entidadfinanciera.entity.Entidad;
+import com.aitamh.agent.core.entidadfinanciera.enums.EstadoEntidad;
 import com.aitamh.agent.core.entidadfinanciera.enums.TipoEntidad;
-import com.aitamh.agent.core.entidadfinanciera.mapper.EntidadFinancieraMapper;
-import com.aitamh.agent.core.entidadfinanciera.repository.EntidadFinancieraRepository;
+import com.aitamh.agent.core.entidadfinanciera.mapper.EntidadMapper;
+import com.aitamh.agent.core.entidadfinanciera.repository.EntidadRepository;
 import com.aitamh.agent.core.entidadfinanciera.utils.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.aitamh.agent.core.entidadfinanciera.constants.EntidadFinancieraConstants.*;
+import static com.aitamh.agent.core.entidadfinanciera.constants.EntidadConstants.*;
 
 /**
  * Implementación del servicio para EntidadFinanciera.
@@ -28,22 +29,22 @@ import static com.aitamh.agent.core.entidadfinanciera.constants.EntidadFinancier
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
+public class EntidadServiceImpl implements EntidadService {
 
-    private final EntidadFinancieraRepository repository;
-    private final EntidadFinancieraMapper mapper;
+    private final EntidadRepository repository;
+    private final EntidadMapper mapper;
     private final Util util;
 
     @Override
-    public EntidadFinancieraResponse create(EntidadFinancieraRequest request) {
+    public EntidadResponse create(EntidadRequest request) {
         // Validar que el tipo de entidad sea válido
-        if (!TipoEntidad.isValido(request.getTipoEntidad())) {
+        if (TipoEntidad.isValido(request.getTipoEntidad())) {
             throw new BusinessException(
                     String.format(TIPOS_PERMITIDOS, request.getTipoEntidad()));
         }
-
+        TipoEntidad tipoEntidad = TipoEntidad.valueOf(request.getTipoEntidad().trim().toUpperCase());
         // Validar unicidad de tipoEntidad + denominacion
-        repository.findByTipoEntidadAndDenominacion(request.getTipoEntidad(), request.getDenominacion())
+        repository.findByTipoEntidadAndDenominacion(tipoEntidad, request.getDenominacion())
                 .ifPresent(existing -> {
                     throw new BusinessException(
                             String.format(EXIST_ENTIDAD,
@@ -53,11 +54,16 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
         String codigo = util.generaCodigoEntidad(
                 request, repository::existsByCodigoEntidad);
 
-        EntidadFinanciera entity = mapper.toEntity(request);
+        Entidad entity = mapper.toEntity(request);
         entity.setCodigoEntidad(codigo);
         entity.setActivo(true);
-        entity.setEstado(true);
-        entity = repository.save(entity);
+        entity.setEstado(EstadoEntidad.ACTIVA);
+
+        if (entity.getTipoEntidad() == TipoEntidad.BANCO) {
+            entity = repository.save(entity);
+        } else {
+            entity.setCodigoEntidad(null);
+        }
 
         log.info("EntidadFinanciera creada: {}", entity.getId());
         return mapper.toResponse(entity);
@@ -65,8 +71,8 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
 
     @Override
     @Transactional(readOnly = true)
-    public EntidadFinancieraResponse findById(Long id) {
-        EntidadFinanciera entity = repository.findById(id)
+    public EntidadResponse findById(Long id) {
+        Entidad entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(NOT_FOUND_ENTIDAD, id)));
         return mapper.toResponse(entity);
@@ -74,22 +80,28 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EntidadFinancieraResponse> getAllActive(String tipo) {
-        return repository.findByTipoEntidadAndActivoAndEstado(tipo, true, true)
+    public List<EntidadResponse> getAllActive(String tipo) {
+        if (TipoEntidad.isValido(tipo)) {
+            throw new BusinessException(
+                    String.format(TIPOS_PERMITIDOS, tipo));
+        }
+        TipoEntidad tipoEntidad = TipoEntidad.valueOf(tipo.trim().toUpperCase());
+
+        return repository.findByTipoEntidadAndActivoAndEstado(tipoEntidad, true, EstadoEntidad.ACTIVA)
                 .stream()
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public PageResponse<EntidadFinancieraResponse> findAll(Pageable pageable) {
-        Page<EntidadFinanciera> page = repository.findByActivo(true, pageable);
+    public PageResponse<EntidadResponse> findAll(Pageable pageable) {
+        Page<Entidad> page = repository.findByActivo(true, pageable);
         return buildPageResponse(page);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<EntidadFinancieraResponse> findByTipo(String tipoEntidad, String searchTerm, Pageable pageable) {
+    public PageResponse<EntidadResponse> findByTipo(String tipoEntidad, String searchTerm, Pageable pageable) {
         String term = (searchTerm == null) ? "" : searchTerm.trim();
         // If a searchTerm is provided, validate minimum length and perform search
         if (!term.isEmpty()) {
@@ -99,17 +111,18 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
 
             // If tipoEntidad == TODOS -> search across all active entities
             if ("TODOS".equalsIgnoreCase(tipoEntidad)) {
-                Page<EntidadFinanciera> page = repository.searchAllByDenominacionOrCodigo(term, pageable);
+                Page<Entidad> page = repository.searchAllByDenominacionOrCodigo(term, pageable);
                 return buildPageResponse(page);
             }
 
             // Validate tipoEntidad when not TODOS
-            if (!TipoEntidad.isValido(tipoEntidad)) {
+            if (TipoEntidad.isValido(tipoEntidad)) {
                 throw new BusinessException(
                         String.format(TIPOS_PERMITIDOS, tipoEntidad));
             }
 
-            Page<EntidadFinanciera> page = repository.searchByTipoAndDenominacionOrCodigo(tipoEntidad, term, pageable);
+            TipoEntidad entidadTipo = TipoEntidad.valueOf(tipoEntidad.trim().toUpperCase());
+            Page<Entidad> page = repository.searchByTipoAndDenominacionOrCodigo(entidadTipo, term, pageable);
             return buildPageResponse(page);
         }
 
@@ -118,29 +131,31 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
             return findAll(pageable);
         }
 
-        if (!TipoEntidad.isValido(tipoEntidad)) {
+        if (TipoEntidad.isValido(tipoEntidad)) {
             throw new BusinessException(
                     String.format(TIPOS_PERMITIDOS, tipoEntidad));
         }
+        TipoEntidad entidadTipo = TipoEntidad.valueOf(tipoEntidad.trim().toUpperCase());
 
-        Page<EntidadFinanciera> page = repository.findByTipoEntidadAndActivo(tipoEntidad, true, pageable);
+        Page<Entidad> page = repository.findByTipoEntidadAndActivo(entidadTipo, true, pageable);
         return buildPageResponse(page);
     }
 
     @Override
-    public EntidadFinancieraResponse update(Long id, EntidadFinancieraRequest request) {
-        EntidadFinanciera entity = repository.findById(id)
+    public EntidadResponse update(Long id, EntidadRequest request) {
+        Entidad entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(NOT_FOUND_ENTIDAD, id)));
 
         // Validar que el tipo de entidad sea válido
-        if (!TipoEntidad.isValido(request.getTipoEntidad())) {
+        if (TipoEntidad.isValido(request.getTipoEntidad())) {
             throw new BusinessException(
                     String.format(TIPOS_PERMITIDOS, request.getTipoEntidad()));
         }
 
+        TipoEntidad entidadTipo = TipoEntidad.valueOf(request.getTipoEntidad().trim().toUpperCase());
         // Validar unicidad de tipoEntidad + denominacion, excluyendo la entidad actual
-        repository.findByTipoEntidadAndDenominacion(request.getTipoEntidad(), request.getDenominacion())
+        repository.findByTipoEntidadAndDenominacion(entidadTipo, request.getDenominacion())
                 .ifPresent(existing -> {
                     if (!existing.getId().equals(id)) {
                         throw new BusinessException(
@@ -158,7 +173,7 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
 
     @Override
     public void delete(Long id) {
-        EntidadFinanciera entity = repository.findById(id)
+        Entidad entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(NOT_FOUND_ENTIDAD, id)));
 
@@ -168,8 +183,8 @@ public class EntidadFinancieraServiceImpl implements EntidadFinancieraService {
         log.info("EntidadFinanciera eliminada: {}", id);
     }
 
-    private PageResponse<EntidadFinancieraResponse> buildPageResponse(Page<EntidadFinanciera> page) {
-        return PageResponse.<EntidadFinancieraResponse>builder()
+    private PageResponse<EntidadResponse> buildPageResponse(Page<Entidad> page) {
+        return PageResponse.<EntidadResponse>builder()
                 .content(page.getContent().stream().map(mapper::toResponse).collect(Collectors.toList()))
                 .pageNumber(page.getNumber())
                 .pageSize(page.getSize())

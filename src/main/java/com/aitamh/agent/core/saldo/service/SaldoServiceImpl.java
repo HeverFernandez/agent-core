@@ -3,6 +3,8 @@ package com.aitamh.agent.core.saldo.service;
 import com.aitamh.agent.core.common.dto.PageResponse;
 import com.aitamh.agent.core.common.exception.BusinessException;
 import com.aitamh.agent.core.common.exception.EntityNotFoundException;
+import com.aitamh.agent.core.entidadfinanciera.entity.Entidad;
+import com.aitamh.agent.core.entidadfinanciera.repository.EntidadRepository;
 import com.aitamh.agent.core.saldo.dto.SaldoRequest;
 import com.aitamh.agent.core.saldo.dto.SaldoResponse;
 import com.aitamh.agent.core.saldo.entity.Saldo;
@@ -33,20 +35,26 @@ import static com.aitamh.agent.core.saldo.constants.SaldoConstants.EXIST_SALDO;
 public class SaldoServiceImpl implements SaldoService {
 
     private final SaldoRepository repository;
+    private final EntidadRepository entidadRepository;
     private final SaldoMapper mapper;
 
     @Override
     public SaldoResponse create(SaldoRequest request) {
         validateSaldoRequest(request);
-        validateUniqueActiveOrBlockedSaldo(request.getEntidadFinancieraId());
 
-        Saldo entity = mapper.toEntity(request);
-        entity.setMontoDisponible(request.getMontoInicial());
-        entity.setEstado(EstadoSaldo.ACTIVO);
-        entity = repository.save(entity);
+        Entidad entidad = entidadRepository.findById(request.getEntidadId())
+                .orElseThrow(() -> new EntityNotFoundException("Entidad no encontrada"));
 
-        log.info("Saldo creado: {}", entity.getId());
-        return mapper.toResponse(entity);
+        validateUniqueActiveOrBlockedSaldo(request.getEntidadId());
+
+        Saldo saldo = mapper.toEntity(request);
+        saldo.setEntidad(entidad);
+        saldo.setMontoDisponible(request.getMontoInicial());
+        saldo.setEstado(EstadoSaldo.ACTIVO);
+        saldo = repository.save(saldo);
+
+        log.info("Saldo creado: {}", saldo.getId());
+        return mapper.toResponse(saldo);
     }
 
     @Override
@@ -69,7 +77,7 @@ public class SaldoServiceImpl implements SaldoService {
                 throw new BusinessException("El término de búsqueda de entidad debe tener al menos 3 caracteres");
             }
 
-            Page<Saldo> page = repository.findByEntidadFinancieraDenominacionAndEstado(entidadBusqueda, estadoSaldo, pageable);
+            Page<Saldo> page = repository.findByEntidadAndEstado(entidadBusqueda, estadoSaldo, pageable);
             return buildPageResponse(page);
         }
 
@@ -79,8 +87,12 @@ public class SaldoServiceImpl implements SaldoService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<SaldoResponse> findByEntidadFinanciera(Long entidadFinancieraId, Pageable pageable) {
-        Page<Saldo> page = repository.findByEntidadFinancieraId(entidadFinancieraId, pageable);
+    public PageResponse<SaldoResponse> findByEntidadFinanciera(Long entidadId, Pageable pageable) {
+        Entidad entidad = entidadRepository.findById(entidadId)
+                .orElseThrow(() -> new EntityNotFoundException("No existe entidad con el id: " + entidadId));
+
+        Page<Saldo> page = repository.findByEntidad(entidad, pageable);
+
         return buildPageResponse(page);
     }
 
@@ -90,7 +102,7 @@ public class SaldoServiceImpl implements SaldoService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Saldo no encontrado: %d", id)));
 
-        validateUniqueActiveOrBlockedSaldo(request.getEntidadFinancieraId());
+        validateUniqueActiveOrBlockedSaldo(request.getEntidadId());
         validateSaldoRequest(request);
         mapper.updateEntityFromRequest(request, entity);
         entity = repository.save(entity);
@@ -115,7 +127,7 @@ public class SaldoServiceImpl implements SaldoService {
     @Transactional(readOnly = true)
     public List<SaldoResponse> findByEntidadFinancieraAndEstado(Long entidadFinancieraId, String estado) {
         EstadoSaldo estadoSaldo = EstadoSaldo.valueOf(estado.toUpperCase());
-        return repository.findByEntidadFinancieraIdAndEstado(entidadFinancieraId, estadoSaldo)
+        return repository.findByEntidadAndEstado(entidadFinancieraId, estadoSaldo)
                 .stream()
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
@@ -161,7 +173,7 @@ public class SaldoServiceImpl implements SaldoService {
     private void validateUniqueActiveOrBlockedSaldo(Long entidadFinancieraId) {
         List<EstadoSaldo> estadosBloqueados = Arrays.asList(EstadoSaldo.ACTIVO, EstadoSaldo.BLOQUEADO);
 
-        boolean exists = repository.existsByEntidadFinancieraIdAndEstadoIn(entidadFinancieraId, estadosBloqueados);
+        boolean exists = repository.existsByEntidad_IdAndEstadoIn(entidadFinancieraId, estadosBloqueados);
 
         if (exists) {
             throw new BusinessException(

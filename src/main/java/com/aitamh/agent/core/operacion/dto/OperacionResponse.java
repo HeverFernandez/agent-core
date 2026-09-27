@@ -1,5 +1,6 @@
 package com.aitamh.agent.core.operacion.dto;
 
+import com.aitamh.agent.core.entidadfinanciera.entity.Entidad;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,16 +20,16 @@ import java.time.LocalDateTime;
 public class OperacionResponse {
 
     private Long id;
-    private String tipoOperacion;
-    private BigDecimal montoOperacion;
+    private String tipo;
+    private BigDecimal monto;
     private BigDecimal comision;
-    private String descripcionOperacion;
+    private String descripcion;
     private String numeroReferencia;
-    private LocalDateTime fechaOperacion;
-    private Long idEntidadFinanciera;
-    private String entidadDenominacion;
+    private LocalDateTime fecha;
+    private Long idEntidad;
+    private String entidad;
     private Long usuarioId;
-    private String estadoOperacion;
+    private String estado;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String createdBy;

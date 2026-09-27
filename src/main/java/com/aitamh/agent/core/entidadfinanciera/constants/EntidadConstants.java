@@ -3,7 +3,7 @@ package com.aitamh.agent.core.entidadfinanciera.constants;
 /**
  * Constantes del módulo EntidadFinanciera.
  */
-public class EntidadFinancieraConstants {
+public class EntidadConstants {
 
     public static final String TIPO_BANCO = "BANCO";
     public static final String TIPO_SERVICIO = "SERVICIO";

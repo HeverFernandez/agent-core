@@ -66,9 +66,9 @@ public class SaldoController {
     }
 
     @Operation(summary = "Listar Saldos por Entidad Financiera")
-    @GetMapping("/entidad/{entidadFinancieraId}")
+    @GetMapping("/entidad/{entidadId}")
     public ResponseEntity<ApiResponse<PageResponse<SaldoResponse>>> findByEntidadFinanciera(
-            @PathVariable Long entidadFinancieraId,
+            @PathVariable Long entidadId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = DEFAULT_PAGE_SIZE + "") int size,
             @RequestParam(defaultValue = "id") String sortBy,
@@ -76,7 +76,7 @@ public class SaldoController {
 
         size = Math.min(size, MAX_PAGE_SIZE);
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        PageResponse<SaldoResponse> response = service.findByEntidadFinanciera(entidadFinancieraId, pageable);
+        PageResponse<SaldoResponse> response = service.findByEntidadFinanciera(entidadId, pageable);
         return ResponseEntity.ok(ApiResponse.success(response, "Listado de Saldos por Entidad"));
     }
 

@@ -1,0 +1,47 @@
+package com.aitamh.agent.core.entidadfinanciera.repository;
+
+import com.aitamh.agent.core.entidadfinanciera.entity.Entidad;
+import com.aitamh.agent.core.entidadfinanciera.enums.EstadoEntidad;
+import com.aitamh.agent.core.entidadfinanciera.enums.TipoEntidad;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Repositorio para Entity EntidadFinanciera.
+ */
+@Repository
+public interface EntidadRepository extends JpaRepository<Entidad, Long> {
+
+    Optional<Entidad> findByCodigoEntidad(String codigoEntidad);
+
+    Page<Entidad> findByTipoEntidadAndActivo(TipoEntidad tipoEntidad, Boolean activo, Pageable pageable);
+
+    Page<Entidad> findByActivo(Boolean activo, Pageable pageable);
+
+    List<Entidad> findByTipoEntidadAndActivoAndEstado(TipoEntidad tipoEntidad, Boolean activo, EstadoEntidad estado);
+
+    boolean existsByCodigoEntidad(String codigoEntidad);
+
+    /**
+     * Busca una entidad por su tipo y denominación.
+     * Utilizado para validar que no exista duplicados de tipo + denominación.
+     *
+     * @param tipoEntidad tipo de la entidad
+     * @param denominacion denominación de la entidad
+     * @return Optional con la entidad si existe, vacío en caso contrario
+     */
+    Optional<Entidad> findByTipoEntidadAndDenominacion(TipoEntidad tipoEntidad, String denominacion);
+
+    @Query("SELECT e FROM Entidad e WHERE e.tipoEntidad = :tipo AND e.activo = true AND (LOWER(e.denominacion) LIKE LOWER(CONCAT('%', :term, '%')) OR LOWER(e.codigoEntidad) LIKE LOWER(CONCAT('%', :term, '%')))" )
+    Page<Entidad> searchByTipoAndDenominacionOrCodigo(@Param("tipo") TipoEntidad tipo, @Param("term") String term, Pageable pageable);
+
+    @Query("SELECT e FROM Entidad e WHERE e.activo = true AND (LOWER(e.denominacion) LIKE LOWER(CONCAT('%', :term, '%')) OR LOWER(e.codigoEntidad) LIKE LOWER(CONCAT('%', :term, '%')))" )
+    Page<Entidad> searchAllByDenominacionOrCodigo(@Param("term") String term, Pageable pageable);
+}
+

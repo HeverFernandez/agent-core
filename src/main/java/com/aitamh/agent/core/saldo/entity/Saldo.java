@@ -2,11 +2,9 @@ package com.aitamh.agent.core.saldo.entity;
 
 import com.aitamh.agent.core.saldo.enums.EstadoSaldo;
 import jakarta.persistence.*;
-import com.aitamh.agent.core.entidadfinanciera.entity.EntidadFinanciera;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.aitamh.agent.core.entidadfinanciera.entity.Entidad;
+import lombok.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -14,19 +12,34 @@ import java.time.LocalDateTime;
  * Entidad que representa un Saldo asignado a una EntidadFinanciera.
  */
 @Entity
-@Table(name = "saldos")
-@Data
-@NoArgsConstructor
+@Table(
+        name = "saldos",
+        uniqueConstraints = {
+        @UniqueConstraint(
+                name = "uk_saldo_entidad",
+                columnNames = "entidad_id"
+        )
+        }
+       )
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
 public class Saldo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "entidad_financiera_id", nullable = false)
-    private Long entidadFinancieraId;
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "entidad_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    name = "fk_saldo_entidad"
+            )
+    )
+    private Entidad entidad;
 
     @Column(name = "monto_inicial", nullable = false, precision = 15, scale = 2)
     private BigDecimal montoInicial;
@@ -39,10 +52,6 @@ public class Saldo {
 
     @Enumerated(EnumType.STRING)
     private EstadoSaldo estado;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "entidad_financiera_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private EntidadFinanciera entidadFinanciera;
 
     @Column(name = "usuario_asignador", length = 100)
     private String usuarioAsignador;

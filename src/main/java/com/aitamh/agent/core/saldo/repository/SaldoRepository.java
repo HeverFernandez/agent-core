@@ -1,5 +1,6 @@
 package com.aitamh.agent.core.saldo.repository;
 
+import com.aitamh.agent.core.entidadfinanciera.entity.Entidad;
 import com.aitamh.agent.core.saldo.entity.Saldo;
 import com.aitamh.agent.core.saldo.enums.EstadoSaldo;
 import jakarta.persistence.LockModeType;
@@ -21,24 +22,25 @@ import java.util.Optional;
 @Repository
 public interface SaldoRepository extends JpaRepository<Saldo, Long> {
 
-    Page<Saldo> findByEntidadFinancieraId(Long entidadFinancieraId, Pageable pageable);
+    Page<Saldo> findByEntidad(Entidad entidadId, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"entidadFinanciera"})
+//    @EntityGraph(attributePaths = {"entidad"})
     Page<Saldo> findByEstado(EstadoSaldo estado, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"entidadFinanciera"})
-    @Query("select s from Saldo s join s.entidadFinanciera ef where lower(ef.denominacion) like lower(concat('%', :entidad, '%')) and s.estado = :estado")
-    Page<Saldo> findByEntidadFinancieraDenominacionAndEstado(String entidad, EstadoSaldo estado, Pageable pageable);
+//    @EntityGraph(attributePaths = {"entidad"})
+    @Query("select s from Saldo s join s.entidad ef where lower(ef.denominacion) like lower(concat('%', :entidad, '%')) and s.estado = :estado")
+    Page<Saldo> findByEntidadAndEstado(String entidad, EstadoSaldo estado, Pageable pageable);
 
-    List<Saldo> findByEntidadFinancieraIdAndEstado(Long entidadFinancieraId, EstadoSaldo estado);
+    List<Saldo> findByEntidadAndEstado(Long entidadFinancieraId, EstadoSaldo estado);
 
-    boolean existsByEntidadFinancieraIdAndEstadoIn(Long entidadFinancieraId, Collection<EstadoSaldo> estados);
+    boolean existsByEntidad_IdAndEstadoIn(Long entidadFinancieraId, Collection<EstadoSaldo> estados);
 
     /**
      * Obtiene el saldo activo más reciente para una entidad financiera aplicando bloqueo pesimista.
      * Esto ayuda a evitar condiciones de carrera al procesar operaciones concurrentes.
      */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("select s from Saldo s where s.entidadFinancieraId = :entidadFinancieraId and s.estado = :estado order by s.id desc")
-    Optional<Saldo> findTopByEntidadFinancieraIdAndEstadoForUpdate(Long entidadFinancieraId, EstadoSaldo estado);
+    @Query("select s from Saldo s where s.entidad.id = :entidadFinancieraId and s.estado = :estado order by s.id desc")
+    Optional<Saldo> findTopByEntidadAndEstadoForUpdate(Long entidadFinancieraId, EstadoSaldo estado);
+
 }
