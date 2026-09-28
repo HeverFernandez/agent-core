@@ -26,7 +26,8 @@ public class OperacionResponse {
     private String descripcion;
     private String numeroReferencia;
     private LocalDateTime fecha;
-    private Long idEntidad;
+    private Long idEntidadBanco;
+    private Long idEntidadServicio;
     private String entidad;
     private String servicio;
     private Long usuarioId;
