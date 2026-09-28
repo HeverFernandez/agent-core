@@ -28,6 +28,7 @@ public class OperacionResponse {
     private LocalDateTime fecha;
     private Long idEntidad;
     private String entidad;
+    private String servicio;
     private Long usuarioId;
     private String estado;
     private LocalDateTime createdAt;

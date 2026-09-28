@@ -123,32 +123,6 @@ public class SaldoServiceImpl implements SaldoService {
         log.info("Saldo eliminado: {}", id);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<SaldoResponse> findByEntidadFinancieraAndEstado(Long entidadFinancieraId, String estado) {
-        EstadoSaldo estadoSaldo = EstadoSaldo.valueOf(estado.toUpperCase());
-        return repository.findByEntidadAndEstado(entidadFinancieraId, estadoSaldo)
-                .stream()
-                .map(mapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public void deductBalance(Long saldoId, BigDecimal monto) {
-        Saldo saldo = repository.findById(saldoId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Saldo no encontrado: %d", saldoId)));
-
-        if (saldo.getMontoDisponible().compareTo(monto) < 0) {
-            throw new BusinessException("Saldo insuficiente para realizar la operación");
-        }
-
-        saldo.setMontoDisponible(saldo.getMontoDisponible().subtract(monto));
-        repository.save(saldo);
-
-        log.info("Saldo deducido: {} de {}", monto, saldoId);
-    }
-
     private PageResponse<SaldoResponse> buildPageResponse(Page<Saldo> page) {
         return PageResponse.<SaldoResponse>builder()
                 .content(page.getContent().stream().map(mapper::toResponse).collect(Collectors.toList()))

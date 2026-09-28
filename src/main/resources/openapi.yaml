@@ -1,0 +1,837 @@
+openapi: 3.0.3
+info:
+  title: Agent Core API
+  description: Contrato OpenAPI del microservicio. Se documentan solo los campos definidos en los DTOs de entrada/salida.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local
+
+tags:
+  - name: EntidadFinanciera
+    description: Gestión de entidades financieras
+  - name: Saldo
+    description: Gestión de saldos
+  - name: Operacion
+    description: Gestión de operaciones bancarias
+
+paths:
+  /api/entidades-financieras:
+    post:
+      tags: [EntidadFinanciera]
+      summary: Crear entidad financiera
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntidadRequest'
+      responses:
+        '201':
+          description: Entidad creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseEntidadResponse'
+
+    get:
+      tags: [EntidadFinanciera]
+      summary: Listar entidades por tipo
+      parameters:
+        - in: query
+          name: tipo
+          schema:
+            type: string
+            default: TODOS
+            enum: [TODOS, BANCO, SERVICIO]
+        - in: query
+          name: searchTerm
+          schema:
+            type: string
+            default: ""
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 20
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            default: id
+        - in: query
+          name: direction
+          schema:
+            type: string
+            default: DESC
+            enum: [ASC, DESC]
+      responses:
+        '200':
+          description: Listado de entidades
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponsePageEntidadResponse'
+
+  /api/entidades-financieras/{id}:
+    get:
+      tags: [EntidadFinanciera]
+      summary: Obtener entidad por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Entidad encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseEntidadResponse'
+
+    put:
+      tags: [EntidadFinanciera]
+      summary: Actualizar entidad financiera
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntidadRequest'
+      responses:
+        '200':
+          description: Entidad actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseEntidadResponse'
+
+    delete:
+      tags: [EntidadFinanciera]
+      summary: Eliminar entidad financiera
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Entidad eliminada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseVoid'
+
+  /api/entidades-financieras/all/active:
+    get:
+      tags: [EntidadFinanciera]
+      summary: Obtener entidades activas por tipo
+      parameters:
+        - in: query
+          name: tipo
+          required: false
+          schema:
+            type: string
+            enum: [BANCO, SERVICIO]
+            default: BANCO
+      responses:
+        '200':
+          description: Entidades activas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseEntidadList'
+
+  /api/saldos:
+    post:
+      tags: [Saldo]
+      summary: Crear saldo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaldoRequest'
+      responses:
+        '201':
+          description: Saldo creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSaldoResponse'
+
+    get:
+      tags: [Saldo]
+      summary: Listar saldos
+      parameters:
+        - in: query
+          name: entidad
+          schema:
+            type: string
+            default: ""
+        - in: query
+          name: estado
+          schema:
+            type: string
+            default: ACTIVO
+            enum: [ACTIVO, BLOQUEADO, AGOTADO, ANULADO]
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 20
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            default: id
+        - in: query
+          name: direction
+          schema:
+            type: string
+            default: DESC
+            enum: [ASC, DESC]
+      responses:
+        '200':
+          description: Listado de saldos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponsePageSaldoResponse'
+
+  /api/saldos/{id}:
+    get:
+      tags: [Saldo]
+      summary: Obtener saldo por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Saldo encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSaldoResponse'
+
+    put:
+      tags: [Saldo]
+      summary: Actualizar saldo
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaldoRequest'
+      responses:
+        '200':
+          description: Saldo actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSaldoResponse'
+
+    delete:
+      tags: [Saldo]
+      summary: Eliminar saldo
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Saldo eliminado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseVoid'
+
+  /api/saldos/entidad/{entidadId}:
+    get:
+      tags: [Saldo]
+      summary: Obtener saldos por entidad
+      parameters:
+        - in: path
+          name: entidadId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Saldos de una entidad
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponsePageSaldoResponse'
+
+  /api/operaciones:
+    post:
+      tags: [Operacion]
+      summary: Registrar operación
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OperacionRequest'
+      responses:
+        '201':
+          description: Operación creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseOperacionResponse'
+
+    get:
+      tags: [Operacion]
+      summary: Listar operaciones con filtros
+      parameters:
+        - in: query
+          name: tipoOperacion
+          schema:
+            type: string
+            default: Todos
+            enum: [Todos, DEPOSITO, RETIRO, PAGO_SERVICIO]
+        - in: query
+          name: estadoOperacion
+          schema:
+            type: string
+            default: COMPLETADA
+            enum: [PENDIENTE, COMPLETADA, ANULADA, FALLIDA]
+        - in: query
+          name: entidad
+          schema:
+            type: integer
+            format: int64
+            nullable: true
+        - in: query
+          name: finicio
+          schema:
+            type: string
+            format: date-time
+            nullable: true
+        - in: query
+          name: ffin
+          schema:
+            type: string
+            format: date-time
+            nullable: true
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Listado de operaciones
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponsePageOperacionResponse'
+
+  /api/operaciones/{id}:
+    get:
+      tags: [Operacion]
+      summary: Obtener operación por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Operación encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseOperacionResponse'
+
+    put:
+      tags: [Operacion]
+      summary: Actualizar operación
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OperacionRequest'
+      responses:
+        '200':
+          description: Operación actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseOperacionResponse'
+
+    delete:
+      tags: [Operacion]
+      summary: Eliminar operación
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Operación eliminada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseVoid'
+
+  /api/operaciones/filtro:
+    get:
+      tags: [Operacion]
+      summary: Filtrar operaciones por tipo y entidad
+      parameters:
+        - in: query
+          name: tipoOperacion
+          required: true
+          schema:
+            type: string
+            enum: [DEPOSITO, RETIRO, PAGO_SERVICIO]
+        - in: query
+          name: idEntidadFinanciera
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Operaciones filtradas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponsePageOperacionResponse'
+
+components:
+  schemas:
+    ApiResponseVoid:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+        data:
+          nullable: true
+
+    ApiResponseEntidadResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/EntidadResponse'
+
+    ApiResponseEntidadList:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntidadResponse'
+
+    ApiResponsePageEntidadResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/PageResponseEntidadResponse'
+
+    ApiResponseSaldoResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/SaldoResponse'
+
+    ApiResponsePageSaldoResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/PageResponseSaldoResponse'
+
+    ApiResponseOperacionResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/OperacionResponse'
+
+    ApiResponsePageOperacionResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/PageResponseOperacionResponse'
+
+    PageResponseEntidadResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntidadResponse'
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        isFirst:
+          type: boolean
+        isLast:
+          type: boolean
+
+    PageResponseSaldoResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/SaldoResponse'
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        isFirst:
+          type: boolean
+        isLast:
+          type: boolean
+
+    PageResponseOperacionResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/OperacionResponse'
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        isFirst:
+          type: boolean
+        isLast:
+          type: boolean
+
+    EntidadRequest:
+      type: object
+      description: DTO de entrada de EntidadFinanciera
+      required:
+        - tipoEntidad
+        - denominacion
+      properties:
+        tipoEntidad:
+          type: string
+          example: BANCO
+          description: Tipo de entidad financiera
+        denominacion:
+          type: string
+          example: Banco de Crédito
+          description: Nombre comercial de la entidad
+        descripcion:
+          type: string
+          nullable: true
+          example: Banco principal del sistema
+          description: Descripción opcional
+
+    EntidadResponse:
+      type: object
+      description: DTO de salida de EntidadFinanciera
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        tipoEntidad:
+          type: string
+          example: BANCO
+        denominacion:
+          type: string
+          example: Banco de Crédito
+        descripcion:
+          type: string
+          nullable: true
+          example: Banco principal del sistema
+        codigoEntidad:
+          type: string
+          nullable: true
+          example: BC01
+        estado:
+          type: string
+          example: ACTIVA
+        activo:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          nullable: true
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    SaldoRequest:
+      type: object
+      description: DTO de entrada de Saldo
+      required:
+        - entidad
+        - montoInicial
+      properties:
+        entidad:
+          type: object
+          description: Entidad financiera asociada al saldo
+          properties:
+            id:
+              type: integer
+              format: int64
+              example: 28
+        montoInicial:
+          type: number
+          format: double
+          example: 22000.00
+        usuarioAsignador:
+          type: string
+          nullable: true
+          example: aitamh
+
+    SaldoResponse:
+      type: object
+      description: DTO de salida de Saldo
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        entidad:
+          type: string
+          example: Banco de Crédito
+        idEntidad:
+          type: integer
+          format: int64
+          example: 1
+        montoInicial:
+          type: number
+          format: double
+          example: 22000.00
+        montoDisponible:
+          type: number
+          format: double
+          example: 22000.00
+        fechaAsignacion:
+          type: string
+          format: date-time
+        estado:
+          type: string
+          example: ACTIVO
+        usuarioAsignador:
+          type: string
+          nullable: true
+          example: aitamh
+        createdAt:
+          type: string
+          format: date-time
+          nullable: true
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    OperacionRequest:
+      type: object
+      description: DTO de entrada de Operación
+      required:
+        - tipo
+        - monto
+        - idEntidadBanco
+        - usuarioId
+      properties:
+        tipo:
+          type: string
+          enum: [DEPOSITO, RETIRO, PAGO_SERVICIO]
+          example: RETIRO
+        monto:
+          type: number
+          format: double
+          example: 100.00
+        comision:
+          type: number
+          format: double
+          nullable: true
+          example: 0.00
+        descripcion:
+          type: string
+          nullable: true
+          example: Pago de servicio
+        numeroReferencia:
+          type: string
+          example: ABC0123
+        idEntidadBanco:
+          type: integer
+          format: int64
+          example: 2
+        idEntidadServicio:
+          type: integer
+          format: int64
+          nullable: true
+          example: 5
+        usuarioId:
+          type: integer
+          format: int64
+          example: 7
+
+    OperacionResponse:
+      type: object
+      description: DTO de salida de Operación
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 59
+        tipo:
+          type: string
+          example: PAGO_SERVICIO
+        monto:
+          type: number
+          format: double
+          example: 100.00
+        descripcion:
+          type: string
+          nullable: true
+          example: Pago de servicio
+        numeroReferencia:
+          type: string
+          example: ABC0123
+        fecha:
+          type: string
+          format: date-time
+        entidad:
+          type: string
+          example: BCP
+        estado:
+          type: string
+          example: COMPLETADA
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time

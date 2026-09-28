@@ -18,9 +18,6 @@ import java.time.LocalDateTime;
 public interface OperacionRepository extends JpaRepository<Operacion, Long> {
 
 //    @EntityGraph(attributePaths = {"entidadBanco"})
-    Page<Operacion> findByUsuarioIdAndActivo(Long usuarioId, Boolean activo, Pageable pageable);
-
-//    @EntityGraph(attributePaths = {"entidadBanco"})
     Page<Operacion> findByTipoAndEntidadBancoAndActivo(
             String tipoOperacion, Long idEntidadFinanciera, Boolean activo, Pageable pageable);
 

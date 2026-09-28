@@ -24,8 +24,5 @@ public interface SaldoService {
 
     void delete(Long id);
 
-    List<SaldoResponse> findByEntidadFinancieraAndEstado(Long entidadFinancieraId, String estado);
-
-    void deductBalance(Long saldoId, BigDecimal monto);
 }
 

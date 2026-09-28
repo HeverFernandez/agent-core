@@ -31,8 +31,6 @@ public interface SaldoRepository extends JpaRepository<Saldo, Long> {
     @Query("select s from Saldo s join s.entidad ef where lower(ef.denominacion) like lower(concat('%', :entidad, '%')) and s.estado = :estado")
     Page<Saldo> findByEntidadAndEstado(String entidad, EstadoSaldo estado, Pageable pageable);
 
-    List<Saldo> findByEntidadAndEstado(Long entidadFinancieraId, EstadoSaldo estado);
-
     boolean existsByEntidad_IdAndEstadoIn(Long entidadFinancieraId, Collection<EstadoSaldo> estados);
 
     /**

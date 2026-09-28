@@ -17,8 +17,6 @@ public interface OperacionService {
 
     PageResponse<OperacionResponse> findAll(String tipoOperacion, String estadoOperacion, Long entidad, String finicio, String ffin, Pageable pageable);;
 
-    PageResponse<OperacionResponse> findByUsuario(Long usuarioId, Pageable pageable);
-
     PageResponse<OperacionResponse> findByTipoAndEntidad(String tipoOperacion, Long idEntidadFinanciera, Pageable pageable);
 
     OperacionResponse update(Long id, OperacionRequest request);

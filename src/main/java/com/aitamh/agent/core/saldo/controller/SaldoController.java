@@ -80,15 +80,6 @@ public class SaldoController {
         return ResponseEntity.ok(ApiResponse.success(response, "Listado de Saldos por Entidad"));
     }
 
-    @Operation(summary = "Obtener Saldos por Entidad Financiera y estado")
-    @GetMapping("/entidad/{entidadFinancieraId}/estado/{estado}")
-    public ResponseEntity<ApiResponse<List<SaldoResponse>>> findByEntidadFinancieraAndEstado(
-            @PathVariable Long entidadFinancieraId,
-            @PathVariable String estado) {
-        List<SaldoResponse> response = service.findByEntidadFinancieraAndEstado(entidadFinancieraId, estado);
-        return ResponseEntity.ok(ApiResponse.success(response, "Saldos obtenidos"));
-    }
-
     @Operation(summary = "Actualizar un Saldo")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<SaldoResponse>> update(

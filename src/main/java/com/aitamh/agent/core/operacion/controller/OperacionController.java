@@ -65,21 +65,6 @@ public class OperacionController {
         return ResponseEntity.ok(ApiResponse.success(response, "Listado de Operaciones"));
     }
 
-    @Operation(summary = "Listar Operaciones por Usuario")
-    @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<ApiResponse<PageResponse<OperacionResponse>>> findByUsuario(
-            @PathVariable Long usuarioId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE + "") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "DESC") Sort.Direction direction) {
-
-        size = Math.min(size, MAX_PAGE_SIZE);
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        PageResponse<OperacionResponse> response = service.findByUsuario(usuarioId, pageable);
-        return ResponseEntity.ok(ApiResponse.success(response, "Listado de Operaciones por Usuario"));
-    }
-
     @Operation(summary = "Listar Operaciones por tipo y Entidad Financiera")
     @GetMapping("/filtro")
     public ResponseEntity<ApiResponse<PageResponse<OperacionResponse>>> findByTipoAndEntidad(

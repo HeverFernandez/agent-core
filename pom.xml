@@ -6,19 +6,23 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>4.1.0</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>com.aitamh</groupId>
 	<artifactId>agent-core</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
+	<name>agent-core</name>
 	<description/>
 	<url/>
 	<licenses>
 		<license/>
 	</licenses>
 	<developers>
-		<developer/>
+		<developer>
+			<id>aitamh</id>
+			<name>Aitamh</name>
+			<email>aitamh.fg@gmail.com</email>
+		</developer>
 	</developers>
 	<scm>
 		<connection/>

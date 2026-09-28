@@ -17,6 +17,7 @@ import com.aitamh.agent.core.saldo.entity.Saldo;
 import com.aitamh.agent.core.saldo.enums.EstadoSaldo;
 import com.aitamh.agent.core.saldo.repository.SaldoRepository;
 import com.aitamh.agent.core.saldo.service.SaldoService;
+import com.aitamh.agent.core.usuario.entity.Usuario;
 import com.aitamh.agent.core.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +51,8 @@ public class OperacionServiceImpl implements OperacionService {
     @Override
     public OperacionResponse create(OperacionRequest request) {
 
+        Entidad idEntidadServicio = null;
+
         Entidad banco = entidadRepository
                 .findById(request.getIdEntidadBanco())
                 .orElseThrow(() ->
@@ -58,6 +61,13 @@ public class OperacionServiceImpl implements OperacionService {
                         )
                 );
 
+        Usuario usuario = usuarioRepository
+                .findById(request.getUsuarioId())
+                .orElseThrow(() ->
+                        new BusinessException(
+                                "Usuario no encontrado"
+                        )
+                );
         validarBanco(banco);
 
         // Validar tipo de operación
@@ -65,6 +75,22 @@ public class OperacionServiceImpl implements OperacionService {
         if (tipo == null) {
             throw new OperacionInvalidaException(
                     String.format("Tipo de operación no válido: %s", request.getTipo()));
+        } if (tipo == TipoOperacion.PAGO_SERVICIO) {
+            Entidad entidadServicio = entidadRepository
+                    .findById(request.getIdEntidadServicio())
+                    .orElseThrow(() ->
+                            new BusinessException(
+                                    "Entidad servicio no encontrada"
+                            )
+                    );
+
+            if (entidadServicio.getTipoEntidad() != TipoEntidad.SERVICIO) {
+                throw new OperacionInvalidaException(
+                        "La entidad indicada no corresponde a un servicio"
+                );
+            }
+
+            idEntidadServicio = entidadServicio;
         }
 
         Long entidadId = request.getIdEntidadBanco();
@@ -82,12 +108,12 @@ public class OperacionServiceImpl implements OperacionService {
             case DEPOSITO:
                 nuevoMonto = saldo.getMontoDisponible().add(monto);
                 break;
-            case RETIRO:
-            case PAGO_SERVICIO:
-                if (saldo.getMontoDisponible().compareTo(monto) < 0) {
-                    throw new SaldoInsuficienteException(entidadId, saldo.getMontoDisponible(), monto);
-                }
-                nuevoMonto = saldo.getMontoDisponible().subtract(monto);
+            case RETIRO, PAGO_SERVICIO:
+                nuevoMonto = descontarSaldo(
+                        saldo,
+                        monto,
+                        entidadId
+                );
                 break;
             default:
                 throw new OperacionInvalidaException(
@@ -100,8 +126,10 @@ public class OperacionServiceImpl implements OperacionService {
         // Registrar operación
         Operacion operacion = mapper.toEntity(request);
         operacion.setEntidadBanco(banco);
+        operacion.setEntidadServicio(idEntidadServicio);
         operacion.setEstado(EstadoOperacion.COMPLETADA);
         operacion.setActivo(true);
+        operacion.setUsuario(usuario);
         operacion = repository.save(operacion);
 
         log.info("Operación creada: {}", operacion.getId());
@@ -195,13 +223,6 @@ public class OperacionServiceImpl implements OperacionService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<OperacionResponse> findByUsuario(Long usuarioId, Pageable pageable) {
-        Page<Operacion> page = repository.findByUsuarioIdAndActivo(usuarioId, true, pageable);
-        return buildPageResponse(page);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public PageResponse<OperacionResponse> findByTipoAndEntidad(String tipoOperacion, Long idEntidadFinanciera, Pageable pageable) {
         Page<Operacion> page = repository.findByTipoAndEntidadBancoAndActivo(tipoOperacion, idEntidadFinanciera, true, pageable);
         return buildPageResponse(page);
@@ -270,5 +291,21 @@ public class OperacionServiceImpl implements OperacionService {
                 .isFirst(page.isFirst())
                 .isLast(page.isLast())
                 .build();
+    }
+
+    private BigDecimal descontarSaldo(
+            Saldo saldo,
+            BigDecimal monto,
+            Long entidadId
+    ) {
+        if (saldo.getMontoDisponible().compareTo(monto) < 0) {
+            throw new SaldoInsuficienteException(
+                    entidadId,
+                    saldo.getMontoDisponible(),
+                    monto
+            );
+        }
+
+        return saldo.getMontoDisponible().subtract(monto);
     }
 }

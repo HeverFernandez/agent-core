@@ -15,6 +15,7 @@ public interface OperacionMapper {
 
 //    @Mapping(source = "idEntidad", target = "entidadBanco.id")
     @Mapping(target = "entidad", source = "entidadBanco.denominacion")
+    @Mapping(target = "servicio", source = "entidadServicio.denominacion")
     OperacionResponse toResponse(Operacion entity);
 
     @Mapping(target = "entidadBanco", ignore = true)
