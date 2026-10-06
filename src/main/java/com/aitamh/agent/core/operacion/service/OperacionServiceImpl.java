@@ -16,7 +16,6 @@ import com.aitamh.agent.core.operacion.repository.OperacionRepository;
 import com.aitamh.agent.core.saldo.entity.Saldo;
 import com.aitamh.agent.core.saldo.enums.EstadoSaldo;
 import com.aitamh.agent.core.saldo.repository.SaldoRepository;
-import com.aitamh.agent.core.saldo.service.SaldoService;
 import com.aitamh.agent.core.usuario.entity.Usuario;
 import com.aitamh.agent.core.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +43,6 @@ public class OperacionServiceImpl implements OperacionService {
     private final OperacionRepository repository;
     private final OperacionMapper mapper;
     private final SaldoRepository saldoRepository;
-    private final SaldoService saldoService;
     private final EntidadRepository entidadRepository;
     private final UsuarioRepository usuarioRepository;
 
@@ -218,14 +216,23 @@ public class OperacionServiceImpl implements OperacionService {
             }
         }
 
-        return buildPageResponse(page);
+        BigDecimal totalComision = repository.sumComisionByFilters(
+                estado,
+                fechaInicio,
+                fechaFin,
+                tipo,
+                idEntidad,
+                true
+        );
+
+        return buildPageResponse(page, totalComision);
     }
 
     @Override
     @Transactional(readOnly = true)
     public PageResponse<OperacionResponse> findByTipoAndEntidad(String tipoOperacion, Long idEntidadFinanciera, Pageable pageable) {
         Page<Operacion> page = repository.findByTipoAndEntidadBancoAndActivo(tipoOperacion, idEntidadFinanciera, true, pageable);
-        return buildPageResponse(page);
+        return buildPageResponse(page, new BigDecimal(0));
     }
 
     @Override
@@ -281,7 +288,7 @@ public class OperacionServiceImpl implements OperacionService {
         }
     }
 
-    private PageResponse<OperacionResponse> buildPageResponse(Page<Operacion> page) {
+    private PageResponse<OperacionResponse> buildPageResponse(Page<Operacion> page, BigDecimal  totalComision) {
         return PageResponse.<OperacionResponse>builder()
                 .content(page.getContent().stream().map(mapper::toResponse).collect(Collectors.toList()))
                 .pageNumber(page.getNumber())
@@ -290,6 +297,7 @@ public class OperacionServiceImpl implements OperacionService {
                 .totalPages(page.getTotalPages())
                 .isFirst(page.isFirst())
                 .isLast(page.isLast())
+                .totalComision(totalComision)
                 .build();
     }
 
@@ -305,7 +313,6 @@ public class OperacionServiceImpl implements OperacionService {
                     monto
             );
         }
-
         return saldo.getMontoDisponible().subtract(monto);
     }
 }

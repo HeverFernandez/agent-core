@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -24,5 +26,6 @@ public class PageResponse<T> {
     private int totalPages;
     private boolean isLast;
     private boolean isFirst;
+    private BigDecimal totalComision;;
 }
 

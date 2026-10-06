@@ -13,7 +13,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface OperacionMapper {
 
-//    @Mapping(source = "idEntidad", target = "entidadBanco.id")
     @Mapping(target = "entidad", source = "entidadBanco.denominacion")
     @Mapping(target = "servicio", source = "entidadServicio.denominacion")
     @Mapping(target = "idEntidadServicio", source = "entidadServicio.id")

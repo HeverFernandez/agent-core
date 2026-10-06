@@ -8,7 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -37,4 +41,22 @@ public interface OperacionRepository extends JpaRepository<Operacion, Long> {
 //    @EntityGraph(attributePaths = {"entidadBanco"})
     Page<Operacion> findByEntidadBancoAndTipoAndEstadoAndFechaBetweenAndActivo(
             Entidad idEntidad, TipoOperacion tipo, EstadoOperacion estado, LocalDateTime inicio, LocalDateTime fin, Boolean activo, Pageable pageable);
+
+    @Query("""
+        SELECT COALESCE(SUM(o.comision), 0)
+        FROM Operacion o
+        WHERE o.activo = :activo
+          AND o.estado = :estado
+          AND o.fecha BETWEEN :inicio AND :fin
+          AND (:tipo IS NULL OR o.tipo = :tipo)
+          AND (:entidadId IS NULL OR o.entidadBanco.id = :entidadId)
+        """)
+    BigDecimal sumComisionByFilters(
+            @Param("estado") EstadoOperacion estado,
+            @Param("inicio") LocalDateTime inicio,
+            @Param("fin") LocalDateTime fin,
+            @Param("tipo") TipoOperacion tipo,
+            @Param("entidadId") Long entidadId,
+            @Param("activo") Boolean activo
+    );
 }
