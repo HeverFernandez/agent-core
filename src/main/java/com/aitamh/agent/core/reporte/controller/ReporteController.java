@@ -5,15 +5,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
- * Controlador REST para Reporte.
+ * Controlador REST para Reporte de Operaciones.
+ *
+ * Genera reportes de operaciones en formato Excel y PDF reutilizando
  */
-@Tag(name = "Reporte", description = "API para gestionar Reportes")
+@Tag(name = "Reporte", description = "API para generar reportes de operaciones")
 @RestController
 @RequestMapping("/api/reportes")
 @RequiredArgsConstructor
@@ -21,39 +24,53 @@ public class ReporteController {
 
     private final ReporteService service;
 
-    @Operation(summary = "Exportar operaciones en Excel con filtros")
-    @GetMapping("/operaciones/excel")
-    public ResponseEntity<byte[]> exportarOperacionesExcel(
+    /**
+     * Exportar operaciones en formato Excel o PDF.
+     *
+     * @param formato excel o pdf (case-insensitive)
+     * @param tipo default "Todos" (DEPOSITO, RETIRO, PAGO_SERVICIO, Todos)
+     * @param estado default "COMPLETADA" (PENDIENTE, COMPLETADA, ANULADA, FALLIDA)
+     * @param entidad ID de la entidad (optional)
+     * @param finicio fecha inicio ISO 8601 (optional)
+     * @param ffin fecha fin ISO 8601 (optional)
+     * @return archivo binario descargable con nombre dinámico
+     */
+    @Operation(summary = "Exportar operaciones filtradas en Excel o PDF")
+    @GetMapping("/operaciones/{formato}")
+    public ResponseEntity<byte[]> exportarOperaciones(
+            @PathVariable String formato,
             @RequestParam(defaultValue = "Todos") String tipo,
             @RequestParam(defaultValue = "COMPLETADA") String estado,
             @RequestParam(required = false) Long entidad,
             @RequestParam(required = false) String finicio,
             @RequestParam(required = false) String ffin) {
 
-        byte[] content = service.exportarOperacionesExcel(tipo, estado, entidad, finicio, ffin);
+        if (!formato.equalsIgnoreCase("excel") && !formato.equalsIgnoreCase("pdf")) {
+            return ResponseEntity.badRequest().build();
+        }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-        headers.setContentDispositionFormData("attachment", "operaciones.xlsx");
+        byte[] contenido;
+        String contentType;
+        String nombreArchivo;
+        LocalDateTime ahora = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+        String timestamp = ahora.format(formatter);
 
-        return new ResponseEntity<>(content, headers, HttpStatus.OK);
-    }
+        if (formato.equalsIgnoreCase("excel")) {
+            contenido = service.exportarOperacionesExcel(
+                    tipo, estado, entidad, finicio, ffin);
+            contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            nombreArchivo = "operaciones_" + timestamp + ".xlsx";
+        } else {
+            contenido = service.exportarOperacionesPdf(
+                    tipo, estado, entidad, finicio, ffin);
+            contentType = "application/pdf";
+            nombreArchivo = "operaciones_" + timestamp + ".pdf";
+        }
 
-    @Operation(summary = "Exportar operaciones en PDF con filtros")
-    @GetMapping("/operaciones/pdf")
-    public ResponseEntity<byte[]> exportarOperacionesPdf(
-            @RequestParam(defaultValue = "Todos") String tipoOperacion,
-            @RequestParam(defaultValue = "COMPLETADA") String estadoOperacion,
-            @RequestParam(required = false) Long entidad,
-            @RequestParam(required = false) String finicio,
-            @RequestParam(required = false) String ffin) {
-
-        byte[] content = service.exportarOperacionesPdf(tipoOperacion, estadoOperacion, entidad, finicio, ffin);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "operaciones.pdf");
-
-        return new ResponseEntity<>(content, headers, HttpStatus.OK);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + nombreArchivo + "\"")
+                .header(HttpHeaders.CONTENT_TYPE, contentType)
+                .body(contenido);
     }
 }
