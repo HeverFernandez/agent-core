@@ -3,8 +3,6 @@ package com.aitamh.agent.core.operacion.service;
 import com.aitamh.agent.core.common.dto.PageResponse;
 import com.aitamh.agent.core.common.exception.*;
 import com.aitamh.agent.core.entidadfinanciera.entity.Entidad;
-import com.aitamh.agent.core.entidadfinanciera.enums.EstadoEntidad;
-import com.aitamh.agent.core.entidadfinanciera.enums.TipoEntidad;
 import com.aitamh.agent.core.entidadfinanciera.repository.EntidadRepository;
 import com.aitamh.agent.core.operacion.constants.EstadoOperacion;
 import com.aitamh.agent.core.operacion.constants.TipoOperacion;
@@ -13,6 +11,8 @@ import com.aitamh.agent.core.operacion.dto.OperacionResponse;
 import com.aitamh.agent.core.operacion.entity.Operacion;
 import com.aitamh.agent.core.operacion.mapper.OperacionMapper;
 import com.aitamh.agent.core.operacion.repository.OperacionRepository;
+import com.aitamh.agent.core.operacion.validator.OperacionFiltroValidator;
+import com.aitamh.agent.core.operacion.validator.OperacionRequestValidator;
 import com.aitamh.agent.core.saldo.entity.Saldo;
 import com.aitamh.agent.core.saldo.enums.EstadoSaldo;
 import com.aitamh.agent.core.saldo.repository.SaldoRepository;
@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 
 /**
  * Implementación del servicio para Operación.
+ * Orquesta la lógica de negocio delegando validaciones a clases especializadas.
  */
 @Slf4j
 @Service
@@ -45,92 +46,60 @@ public class OperacionServiceImpl implements OperacionService {
     private final SaldoRepository saldoRepository;
     private final EntidadRepository entidadRepository;
     private final UsuarioRepository usuarioRepository;
+    private final OperacionRequestValidator requestValidator;
+    private final OperacionFiltroValidator filtroValidator;
 
     @Override
     public OperacionResponse create(OperacionRequest request) {
+        // Validar solicitud general
+        requestValidator.validarSolicitud(request);
 
-        Entidad idEntidadServicio = null;
-
+        // Obtener y validar banco
         Entidad banco = entidadRepository
                 .findById(request.getIdEntidadBanco())
-                .orElseThrow(() ->
-                        new BusinessException(
-                                "Entidad bancaria no encontrada"
-                        )
-                );
+                .orElseThrow(() -> new EntityNotFoundException("Entidad bancaria no encontrada"));
+        requestValidator.validarEntidadBancaria(banco);
 
+        // Obtener y validar usuario
         Usuario usuario = usuarioRepository
                 .findById(request.getUsuarioId())
-                .orElseThrow(() ->
-                        new BusinessException(
-                                "Usuario no encontrado"
-                        )
-                );
-        validarBanco(banco);
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
+        requestValidator.validarUsuario(usuario);
 
-        // Validar tipo de operación
+        // Validar tipo de operación y obtener entidad de servicio si aplica
         TipoOperacion tipo = TipoOperacion.fromString(request.getTipo());
-        if (tipo == null) {
-            throw new OperacionInvalidaException(
-                    String.format("Tipo de operación no válido: %s", request.getTipo()));
-        } if (tipo == TipoOperacion.PAGO_SERVICIO) {
-            Entidad entidadServicio = entidadRepository
+        Entidad entidadServicio = null;
+
+        if (tipo == TipoOperacion.PAGO_SERVICIO) {
+            entidadServicio = entidadRepository
                     .findById(request.getIdEntidadServicio())
-                    .orElseThrow(() ->
-                            new BusinessException(
-                                    "Entidad servicio no encontrada"
-                            )
-                    );
-
-            if (entidadServicio.getTipoEntidad() != TipoEntidad.SERVICIO) {
-                throw new OperacionInvalidaException(
-                        "La entidad indicada no corresponde a un servicio"
-                );
-            }
-
-            idEntidadServicio = entidadServicio;
+                    .orElseThrow(() -> new EntityNotFoundException("Entidad de servicio no encontrada"));
+            requestValidator.validarEntidadServicio(entidadServicio);
         }
 
+        // Obtener saldo con bloqueo para evitar condiciones de carrera
         Long entidadId = request.getIdEntidadBanco();
-
-        // Obtener saldo con estado VIGENTE con bloqueo para evitar condiciones de carrera
         Saldo saldo = saldoRepository
                 .findTopByEntidadAndEstadoForUpdate(entidadId, EstadoSaldo.ACTIVO)
                 .orElseThrow(() -> new SaldoNotFoundException(
-                        String.format("No existe un saldo con estado '%s' para la entidad financiera %d", EstadoSaldo.ACTIVO, entidadId)));
+                        String.format("No existe un saldo con estado '%s' para la entidad financiera %d",
+                                EstadoSaldo.ACTIVO, entidadId)));
 
-        BigDecimal monto = request.getMonto();
-        BigDecimal nuevoMonto;
-
-        switch (tipo) {
-            case DEPOSITO:
-                nuevoMonto = saldo.getMontoDisponible().add(monto);
-                break;
-            case RETIRO, PAGO_SERVICIO:
-                nuevoMonto = descontarSaldo(
-                        saldo,
-                        monto,
-                        entidadId
-                );
-                break;
-            default:
-                throw new OperacionInvalidaException(
-                        String.format("Tipo de operación no válido: %s", request.getTipo()));
-        }
-
+        // Procesar cambio de saldo según tipo de operación
+        BigDecimal nuevoMonto = procesarOperacionSaldo(tipo, saldo, request.getMonto(), entidadId);
         saldo.setMontoDisponible(nuevoMonto);
         saldoRepository.save(saldo);
 
         // Registrar operación
         Operacion operacion = mapper.toEntity(request);
         operacion.setEntidadBanco(banco);
-        operacion.setEntidadServicio(idEntidadServicio);
+        operacion.setEntidadServicio(entidadServicio);
         operacion.setEstado(EstadoOperacion.COMPLETADA);
         operacion.setActivo(true);
         operacion.setUsuario(usuario);
         operacion = repository.save(operacion);
 
-        log.info("Operación creada: {}", operacion.getId());
+        log.info("Operación creada: {} - Tipo: {}, Monto: {}", operacion.getId(), tipo, request.getMonto());
         return mapper.toResponse(operacion);
     }
 
@@ -146,86 +115,74 @@ public class OperacionServiceImpl implements OperacionService {
     @Override
     @Transactional(readOnly = true)
     public PageResponse<OperacionResponse> findAll(
-            String tipoOperacion, String estadoOperacion, Long idEntidad, String finicio, String ffin, Pageable pageable) {
+            String tipoOperacion, String estadoOperacion, Long idEntidad,
+            String finicio, String ffin, Pageable pageable) {
 
-        // Paso 1: Resolver rango de fechas
-        LocalDateTime fechaInicio;
-        LocalDateTime fechaFin;
+        // Validar y resolver tipo de operación
+        TipoOperacion tipo = filtroValidator.validarYObtenerTipoOperacion(tipoOperacion);
 
-        if (finicio == null || finicio.trim().isEmpty()) {
-            LocalDate hoy = LocalDate.now();
-            fechaInicio = LocalDateTime.of(hoy, LocalTime.MIN);
-        } else {
-            fechaInicio = LocalDateTime.parse(finicio.trim());
+        // Validar y resolver estado de operación
+        EstadoOperacion estado = filtroValidator.validarYObtenerEstadoOperacion(estadoOperacion);
+
+        // Validar ID de entidad
+        filtroValidator.validarEntidadId(idEntidad);
+
+        // Validar y resolver fechas
+        LocalDateTime fechaInicio = filtroValidator.validarYObtenerFechaInicio(finicio);
+        LocalDateTime fechaFin = filtroValidator.validarYObtenerFechaFin(ffin);
+
+        // Establecer valores por defecto (día actual completo)
+        if (fechaInicio == null) {
+            fechaInicio = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+        }
+        if (fechaFin == null) {
+            fechaFin = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
         }
 
-        if (ffin == null || ffin.trim().isEmpty()) {
-            LocalDate hoy = LocalDate.now();
-            fechaFin = LocalDateTime.of(hoy, LocalTime.MAX);
-        } else {
-            fechaFin = LocalDateTime.parse(ffin.trim());
-        }
+        // Validar rango de fechas
+        filtroValidator.validarRangoFechas(fechaInicio, fechaFin);
 
-        // Paso 2: Resolver tipo de operación
-        TipoOperacion tipo = null;
-        if (tipoOperacion != null && !tipoOperacion.trim().isEmpty() && !"Todos".equalsIgnoreCase(tipoOperacion.trim())) {
-            try {
-                tipo = TipoOperacion.valueOf(tipoOperacion.trim().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                throw new OperacionInvalidaException(
-                        String.format("Tipo de operación no válido: %s", tipoOperacion));
-            }
-        }
+        // Ejecutar query según combinación de filtros
+        Page<Operacion> page = obtenerPaginaOperaciones(tipo, estado, idEntidad, fechaInicio, fechaFin, pageable);
 
-        // Paso 3: Resolver estado de operación
-        EstadoOperacion estado;
-        try {
-            estado = EstadoOperacion.valueOf(estadoOperacion.trim().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new OperacionInvalidaException(
-                    String.format("Estado de operación no válido: %s", estadoOperacion));
-        }
+        // Calcular total de comisiones para los filtros aplicados
+        BigDecimal totalComision = repository.sumComisionByFilters(
+                estado, fechaInicio, fechaFin, tipo, idEntidad, true);
 
-        // Paso 4: Ejecutar query según combinación de filtros
-        Page<Operacion> page;
+        return buildPageResponse(page, totalComision);
+    }
+
+    /**
+     * Obtiene la página de operaciones según los filtros aplicados.
+     * Ejecuta la query más específica según qué filtros están activos.
+     */
+    private Page<Operacion> obtenerPaginaOperaciones(
+            TipoOperacion tipo, EstadoOperacion estado, Long idEntidad,
+            LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
 
         if (idEntidad == null || idEntidad == 0) {
             // Sin filtro de entidad
             if (tipo == null) {
-                // Sin tipo de operación
-                page = repository.findByEstadoAndFechaBetweenAndActivo(
+                return repository.findByEstadoAndFechaBetweenAndActivo(
                         estado, fechaInicio, fechaFin, true, pageable);
             } else {
-                // Con tipo de operación
-                page = repository.findByTipoAndEstadoAndFechaBetweenAndActivo(
+                return repository.findByTipoAndEstadoAndFechaBetweenAndActivo(
                         tipo, estado, fechaInicio, fechaFin, true, pageable);
             }
         } else {
+            // Con filtro de entidad
             Entidad entidad = entidadRepository.findById(idEntidad)
                     .orElseThrow(() -> new EntityNotFoundException(
-                            String.format("Entidad bancaria no encontrada: %d", idEntidad)));
-            // Con filtro de entidad
+                            String.format("Entidad financiera no encontrada: %d", idEntidad)));
+
             if (tipo == null) {
-                // Sin tipo de operación
-                page = repository.findByEntidadBancoAndEstadoAndFechaBetweenAndActivo(
+                return repository.findByEntidadBancoAndEstadoAndFechaBetweenAndActivo(
                         entidad, estado, fechaInicio, fechaFin, true, pageable);
             } else {
-                // Con tipo de operación
-                page = repository.findByEntidadBancoAndTipoAndEstadoAndFechaBetweenAndActivo(
+                return repository.findByEntidadBancoAndTipoAndEstadoAndFechaBetweenAndActivo(
                         entidad, tipo, estado, fechaInicio, fechaFin, true, pageable);
             }
         }
-
-        BigDecimal totalComision = repository.sumComisionByFilters(
-                estado,
-                fechaInicio,
-                fechaFin,
-                tipo,
-                idEntidad,
-                true
-        );
-
-        return buildPageResponse(page, totalComision);
     }
 
     @Override
@@ -268,29 +225,35 @@ public class OperacionServiceImpl implements OperacionService {
         log.info("Operación eliminada: {}", id);
     }
 
-    private void validarBanco(Entidad entidad) {
-        if (entidad.getTipoEntidad() != TipoEntidad.BANCO) {
-            throw new BusinessException(
-                    "La entidad seleccionada no es un banco"
-            );
-        }
+    /**
+     * Procesa el cambio de saldo según el tipo de operación.
+     * Para retiros y pagos de servicio, valida que haya saldo suficiente.
+     */
+    private BigDecimal procesarOperacionSaldo(
+            TipoOperacion tipo, Saldo saldo, BigDecimal monto, Long entidadId) {
 
-        if (!entidad.isActivo()) {
-            throw new BusinessException(
-                    "El banco se encuentra inactivo"
-            );
-        }
-
-        if (entidad.getEstado() != EstadoEntidad.ACTIVA) {
-            throw new BusinessException(
-                    "El banco no se encuentra habilitado"
-            );
-        }
+        return switch (tipo) {
+            case DEPOSITO -> saldo.getMontoDisponible().add(monto);
+            case RETIRO, PAGO_SERVICIO -> {
+                requestValidator.validarSaldoSuficiente(
+                        saldo.getMontoDisponible(), monto, entidadId);
+                yield saldo.getMontoDisponible().subtract(monto);
+            }
+            default -> throw new OperacionInvalidaException(
+                    String.format("Tipo de operación no válido: %s", tipo));
+        };
     }
 
-    private PageResponse<OperacionResponse> buildPageResponse(Page<Operacion> page, BigDecimal  totalComision) {
+    /**
+     * Construye la respuesta paginada con el total de comisiones.
+     */
+    private PageResponse<OperacionResponse> buildPageResponse(
+            Page<Operacion> page, BigDecimal totalComision) {
+
         return PageResponse.<OperacionResponse>builder()
-                .content(page.getContent().stream().map(mapper::toResponse).collect(Collectors.toList()))
+                .content(page.getContent().stream()
+                        .map(mapper::toResponse)
+                        .collect(Collectors.toList()))
                 .pageNumber(page.getNumber())
                 .pageSize(page.getSize())
                 .totalElements(page.getTotalElements())
@@ -299,20 +262,5 @@ public class OperacionServiceImpl implements OperacionService {
                 .isLast(page.isLast())
                 .totalComision(totalComision)
                 .build();
-    }
-
-    private BigDecimal descontarSaldo(
-            Saldo saldo,
-            BigDecimal monto,
-            Long entidadId
-    ) {
-        if (saldo.getMontoDisponible().compareTo(monto) < 0) {
-            throw new SaldoInsuficienteException(
-                    entidadId,
-                    saldo.getMontoDisponible(),
-                    monto
-            );
-        }
-        return saldo.getMontoDisponible().subtract(monto);
     }
 }
